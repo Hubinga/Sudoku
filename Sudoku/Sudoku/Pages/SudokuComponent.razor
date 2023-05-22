@@ -1,0 +1,18 @@
+﻿<h3>Sudoku</h3>
+
+<section class="board">
+	@foreach (var item in Numbers)
+	{
+		<div class="tile first-col" @onclick="()=>TileClicked(item.Key)">@(item.Value?item.Key:"")</div>
+	}
+</section>
+
+@code {
+	private Dictionary<int, bool> Numbers = Enumerable.Range(1, 81).ToDictionary(x=>x, x=>false);
+
+	private void TileClicked(int key)
+	{
+		Numbers[key] = !Numbers[key];
+	}
+}
+

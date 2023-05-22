@@ -1,0 +1,18 @@
+﻿.board {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 11% 11% 11% 11% 11% 11% 11% 11% 11%;
+    grid-template-rows: 11% 11% 11% 11% 11% 11% 11% 11% 11%;
+    max-width: 450px;
+}
+
+.tile {
+    border-right: 1px solid black;
+    min-width: 50px;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+}
