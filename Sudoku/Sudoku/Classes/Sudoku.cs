@@ -6,15 +6,13 @@ namespace Sudoku.Classes
 	{
 		public Sudoku(int[,] board)
 		{
-			Board = board;
+			OriginalBoard = board;
+			Board = new int[board.GetLength(0), board.GetLength(1)];
+			Array.Copy(board, Board, board.Length);
 		}
 
 		public int[,] Board { get; private set; }
-
-		public void ChangeState(int key)
-		{
-			//FieldStates[key] = !FieldStates[key];
-		}
+		private readonly int[,] OriginalBoard;
 
 		public bool IsSolved()
 		{
@@ -72,6 +70,17 @@ namespace Sudoku.Classes
 					Console.Write(Board[i,j] + " ");
 				}
 				Console.WriteLine();
+			}
+		}
+
+		public void Reset()
+		{
+			for (int i = 0; i < Board.GetLength(0); i++)
+			{
+				for (int j = 0; j < Board.GetLength(1); j++)
+				{
+					Board[i, j] = OriginalBoard[i, j];
+				}
 			}
 		}
 	}

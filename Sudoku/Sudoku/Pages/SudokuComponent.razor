@@ -1,6 +1,7 @@
 ﻿@using Sudoku.Classes;
 <h3>Sudoku</h3>
 <button @onclick="SolveSudoku">Solve</button>
+<button @onclick="ResetSudoku">Reset</button>
 <InputFile OnChange="@OnInputFileChanged"/>
 <section class="board">
 	@{
@@ -10,7 +11,9 @@
 			{
 				for (int j = 0; j < sudoku.Board.GetLength(1); j++)
 				{
-					<div class="tile first-col">@sudoku.Board[i, j]</div>
+					int currentRowIdx = i;
+					int currentColIdx = j;
+					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class="tile first-col" @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@sudoku.Board[i, j]</div>
 				}
 			}
 		}
@@ -19,16 +22,49 @@
 
 @code {
 
+	private struct Field
+	{
+		public int RowIdx;
+		public int ColIdx;
+
+		public Field(int rowIdx, int colIdx)
+		{
+			RowIdx = rowIdx;
+			ColIdx = colIdx;
+		}
+	}
+
 	private bool sudokuSelected = false;
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private SudokuSolver sudokuSolver = new SudokuSolver();
 	private Sudoku? sudoku = null;
 
-	private void TileClicked(int key)
+	private Field activeField = new Field(-1, -1);
+
+	private void KeyboardEventHandler(KeyboardEventArgs args)
+	{
+		if (sudoku != null && activeField.RowIdx != -1 && activeField.ColIdx != -1)
+		{
+			string key = args.Key;
+
+			Console.WriteLine("Key Pressed is " + key);
+			Console.WriteLine("Event Type " + args.Type);
+
+			int inputNumber;
+			if (int.TryParse(key, out inputNumber))
+			{
+				sudoku.ChangeNumberOfField(activeField.RowIdx, activeField.ColIdx, Convert.ToInt32(args.Key));
+			}
+		}
+	}
+
+	private void FieldClicked(int rowIdx, int colIdx)
 	{
 		if (sudoku != null)
 		{
-			//sudoku.ChangeState(key);
+			Console.WriteLine("rowIdx: {0}, colIdx: {1}", rowIdx, colIdx);
+			activeField.RowIdx = rowIdx;
+			activeField.ColIdx = colIdx;
 		}
 	}
 
@@ -53,7 +89,14 @@
 		{
 			Console.WriteLine(ex.Message);
 		}
+	}
 
+	private void ResetSudoku()
+	{
+		if (sudoku != null)
+		{
+			sudoku.Reset();
+		}
 	}
 
 	private void SolveSudoku()
