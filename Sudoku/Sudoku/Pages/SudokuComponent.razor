@@ -103,8 +103,15 @@
 	{
 		if (sudoku != null)
 		{
-			sudokuSolver.SolveSudoku(sudoku);
-			Console.WriteLine("After sudoku solved");
+			if(sudokuSolver.IsSudokuPossible(sudoku))
+			{
+				sudokuSolver.SolveSudoku(sudoku);
+			}
+			else
+			{
+				Console.WriteLine("Sudoku not possible");
+			}
+			
 		}
 	}
 }

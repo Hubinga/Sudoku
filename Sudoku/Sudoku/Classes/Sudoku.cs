@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-
-namespace Sudoku.Classes
+﻿namespace Sudoku.Classes
 {
 	public class Sudoku
 	{
@@ -54,6 +52,51 @@ namespace Sudoku.Classes
 			}
 
 			return true;
+		}
+
+
+		public bool HasDublicateInRow()
+		{
+			for (int i = 0; i < Board.GetLength(0); i++)
+			{
+				//get current row
+				List<int> currentRow = Enumerable.Range(0, Board.GetLength(1)).Select(x => Board[i, x]).Where(e=>e!=0).ToList();
+				List<int> distinctNumbers = currentRow.Distinct().ToList();
+				//e.g. filled fields: 5 (1,2,3,2,4) -> distinct numbers: 4 -> dublicate
+				//e.g. filled fields: 4 (1,2,3,4) -> distinct numbers: 4 -> no dublicate
+				if(currentRow.Count != distinctNumbers.Count)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool HasDublicateInCol()
+		{
+			for (int i = 0; i < Board.GetLength(1); i++)
+			{
+				//get current row
+				List<int> currentCol = Enumerable.Range(0, Board.GetLength(0)).Select(x => Board[x, i]).Where(e => e != 0).ToList();
+				List<int> distinctNumbers = currentCol.Distinct().ToList();
+				//e.g. filled fields: 5 (1,2,3,2,4) -> distinct numbers: 4 -> dublicate
+				//e.g. filled fields: 4 (1,2,3,4) -> distinct numbers: 4 -> no dublicate
+				if (currentCol.Count != distinctNumbers.Count)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool HasDublicateInBlock()
+		{
+			
+
+
+			return false;
 		}
 
 		public bool IsFieldEmpty(int rowIdx, int colIdx) => Board[rowIdx, colIdx] == 0;

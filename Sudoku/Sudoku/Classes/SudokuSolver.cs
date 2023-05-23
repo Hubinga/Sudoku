@@ -6,14 +6,9 @@
 
 		public bool IsSudokuPossible(Sudoku sudoku)
 		{
-			throw new NotImplementedException();
-
-			for (int i = 0; i < sudoku.Board.GetLength(0); i++)
+			if(sudoku.HasDublicateInRow() || sudoku.HasDublicateInCol() || sudoku.HasDublicateInBlock())
 			{
-				for (int j = 0; j < sudoku.Board.GetLength(1); j++)
-				{
-
-				}
+				return false;
 			}
 
 			return true;
