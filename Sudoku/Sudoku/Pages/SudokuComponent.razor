@@ -1,18 +1,68 @@
-﻿<h3>Sudoku</h3>
-
+﻿@using Sudoku.Classes;
+<h3>Sudoku</h3>
+<button @onclick="SolveSudoku">Solve</button>
+<InputFile OnChange="@OnInputFileChanged"/>
 <section class="board">
-	@foreach (var item in Numbers)
-	{
-		<div class="tile first-col" @onclick="()=>TileClicked(item.Key)">@(item.Value?item.Key:"")</div>
+	@{
+		if (sudoku != null)
+		{
+			for (int i = 0; i < sudoku.Board.GetLength(0); i++)
+			{
+				for (int j = 0; j < sudoku.Board.GetLength(1); j++)
+				{
+					<div class="tile first-col">@sudoku.Board[i, j]</div>
+				}
+			}
+		}
 	}
 </section>
 
 @code {
-	private Dictionary<int, bool> Numbers = Enumerable.Range(1, 81).ToDictionary(x=>x, x=>false);
+
+	private bool sudokuSelected = false;
+	private SudokuCreator sudokuCreator = new SudokuCreator();
+	private SudokuSolver sudokuSolver = new SudokuSolver();
+	private Sudoku? sudoku = null;
 
 	private void TileClicked(int key)
 	{
-		Numbers[key] = !Numbers[key];
+		if (sudoku != null)
+		{
+			//sudoku.ChangeState(key);
+		}
+	}
+
+	private string fileContent = "";
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+	{
+		//check for file type
+
+		var file = e.File;
+		long maxsize = 512000;
+
+		var buffer = new byte[file.Size];
+		await file.OpenReadStream(maxsize).ReadAsync(buffer);
+		fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+
+		try
+		{
+			sudoku = sudokuCreator.LoadFromFile(fileContent);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+		}
+
+	}
+
+	private void SolveSudoku()
+	{
+		if (sudoku != null)
+		{
+			sudokuSolver.SolveSudoku(sudoku);
+			Console.WriteLine("After sudoku solved");
+		}
 	}
 }
 
