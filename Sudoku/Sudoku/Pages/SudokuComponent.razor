@@ -49,12 +49,17 @@
 		}
 	}
 
-	private bool sudokuSelected = false;
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private SudokuSolver sudokuSolver = new SudokuSolver();
 	private Sudoku? sudoku = null;
 
 	private Field activeField = new Field(-1, -1);
+
+	#region Helper Methods
+
+	#endregion
+
+	#region Sudoku Methods
 
 	private void KeyboardEventHandler(KeyboardEventArgs args)
 	{
@@ -91,8 +96,9 @@
 			}
 		}
 	}
+	#endregion
 
-	private string fileContent = "";
+	#region Button Methods
 
 	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
 	{
@@ -103,7 +109,7 @@
 
 		var buffer = new byte[file.Size];
 		await file.OpenReadStream(maxsize).ReadAsync(buffer);
-		fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+		string fileContent = System.Text.Encoding.UTF8.GetString(buffer);
 
 		try
 		{
@@ -138,5 +144,6 @@
 
 		}
 	}
+	#endregion
 }
 
