@@ -4,6 +4,9 @@
 	<button class="button-purple" @onclick="SolveSudoku">Solve</button>
 	<button class="button-purple" @onclick="ResetSudoku">Reset</button>
 	<button class="button-purple" @onclick="GetHint">Hint</button>
+	<button class="button-purple" @onclick="Start">Start</button>
+	<button class="button-purple" @onclick="GetResult">End</button>
+	<br/>
 	<label>
 		Upload a sudoku:
 		<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
@@ -135,20 +138,28 @@
 		}
 	}
 
-	private async void SolveSudoku()
+	private void SolveSudoku()
 	{
 		if (sudoku != null)
 		{
-			if (sudokuSolver.IsSudokuPossible(sudoku))
+			sudoku.UncoverSolution();
+		}
+	}
+
+	private async void GetResult()
+	{
+		if (sudoku != null)
+		{
+			if (sudoku.IsCorrectSoulution())
 			{
-				sudokuSolver.SolveSudoku(sudoku);
+				await DisplayAlert("Correct Solution!");
+				Console.WriteLine("Correct Solution!");
 			}
 			else
 			{
-				await DisplayAlert("Sudoku not possible to solve (dublicate in collumn, row or block)!");
-				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+				await DisplayAlert("Wrong Solution!");
+				Console.WriteLine("Wrong Solution!");
 			}
-
 		}
 	}
 
@@ -157,6 +168,23 @@
 		if(sudoku != null)
 		{
 			sudoku.UncoverRandomField();
+		}
+	}
+
+	private async void Start()
+	{
+		if (sudoku != null)
+		{
+			if (sudokuSolver.IsSudokuPossible(sudoku))
+			{
+				//start generate solution in background
+				sudokuSolver.GenerateSolution(sudoku);
+			}
+			else
+			{
+				await DisplayAlert("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+			}
 		}
 	}
 	#endregion
