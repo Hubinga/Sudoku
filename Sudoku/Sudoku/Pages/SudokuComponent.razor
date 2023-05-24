@@ -1,4 +1,5 @@
 ﻿@using Sudoku.Classes;
+@inject SweetAlertService Swal;
 <div>
 	<button class="button-purple" @onclick="SolveSudoku">Solve</button>
 	<button class="button-purple" @onclick="ResetSudoku">Reset</button>
@@ -57,6 +58,10 @@
 
 	#region Helper Methods
 
+	private async Task DisplayAlert(string message)
+	{
+		await Swal.FireAsync(message);
+	}
 	#endregion
 
 	#region Sudoku Methods
@@ -129,7 +134,7 @@
 		}
 	}
 
-	private void SolveSudoku()
+	private async void SolveSudoku()
 	{
 		if (sudoku != null)
 		{
@@ -139,7 +144,8 @@
 			}
 			else
 			{
-				Console.WriteLine("Sudoku not possible");
+				await DisplayAlert("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
 			}
 
 		}
