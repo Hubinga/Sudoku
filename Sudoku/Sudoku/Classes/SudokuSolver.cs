@@ -6,7 +6,7 @@
 
 		public bool IsSudokuPossible(Sudoku sudoku)
 		{
-			if(sudoku.HasDublicateInRow() || sudoku.HasDublicateInCol() || sudoku.HasDublicateInBlock())
+			if(sudoku.HasDublicateInRows() || sudoku.HasDublicateInColumns() || sudoku.HasDublicateInBlocks())
 			{
 				return false;
 			}
@@ -14,42 +14,12 @@
 			return true;
 		}
 
-		public void UncoverRandomField(Sudoku sudoku)
+		public void GenerateSolution(Sudoku sudoku)
 		{
-			sudoku.UncoverRandomField();
-		}
+			SolveSudoku(sudoku);
+		} 
 
-		public bool IsNumberPossible(Sudoku sudoku, int rowIdx, int colIdx, int number)
-		{
-			//horizontal
-			if (!sudoku.NumberAtRowPossible(rowIdx, number))
-			{
-				return false;
-			}
-			//vertical
-			if (!sudoku.NumberAtCollumnPossible(colIdx, number))
-			{
-				return false;
-			}
-			//3x3 block
-			int rowIdxStart = rowIdx / 3 * 3;
-			int colIdxStart = colIdx / 3 * 3;
-
-			for (int i = rowIdxStart; i < rowIdxStart + 2; i++)
-			{
-				for (int j = colIdxStart; j < colIdxStart + 2; j++)
-				{
-					if (sudoku.Board[i,j] == number && (i != rowIdx && j != colIdx))
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
-		}
-
-		public void SolveSudoku(Sudoku sudoku, int rowIdx = 0, int colIdx = 0)
+		private void SolveSudoku(Sudoku sudoku, int rowIdx = 0, int colIdx = 0)
 		{
 
 			if (sudoku.IsSolved())
@@ -73,7 +43,7 @@
 				{
 					if (IsNumberPossible(sudoku, rowIdx, colIdx, i))
 					{
-						sudoku.ChangeNumberOfField(rowIdx, colIdx, i);
+						sudoku.ChangeNumberOfField(rowIdx, colIdx, i, true);
 						SolveSudoku(sudoku, nextRowIdx, nextColIdx);
 					}
 				}
@@ -83,6 +53,27 @@
 					sudoku.ClearField(rowIdx, colIdx);
 				}	
 			}
+		}
+
+		private bool IsNumberPossible(Sudoku sudoku, int rowIdx, int colIdx, int number)
+		{
+			//horizontal
+			if (!sudoku.NumberAtRowPossible(rowIdx, number))
+			{
+				return false;
+			}
+			//vertical
+			if (!sudoku.NumberAtCollumnPossible(colIdx, number))
+			{
+				return false;
+			}
+			//3x3 block
+			if(!sudoku.NumberAtBlockPossible(rowIdx, colIdx, number))
+			{
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

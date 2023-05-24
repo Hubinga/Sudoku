@@ -5,57 +5,20 @@
 		public Sudoku(int[,] board)
 		{
 			OriginalBoard = board;
+
 			Board = new int[board.GetLength(0), board.GetLength(1)];
 			Array.Copy(board, Board, board.Length);
+
+			SolvedBoard = new int[board.GetLength(0), board.GetLength(1)];
+			Array.Copy(board, SolvedBoard, board.Length);
 		}
 
 		public int[,] Board { get; private set; }
 		private readonly int[,] OriginalBoard;
+		public readonly int[,] SolvedBoard;
 
-		public bool IsSolved()
-		{
-			for (int i = 0; i < Board.GetLength(0); i++)
-			{
-				for (int j = 0; j < Board.GetLength(1); j++)
-				{
-					if (Board[i,j] == 0)
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
-		}
-
-		public bool NumberAtRowPossible(int rowIdx, int number) 
-		{
-			for (int i = 0; i < Board.GetLength(1); i++)
-			{
-				if (Board[rowIdx, i] == number)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		public bool NumberAtCollumnPossible(int colIdx, int number)
-		{
-			for (int i = 0; i < Board.GetLength(0); i++)
-			{
-				if (Board[i, colIdx] == number)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-
-		public bool HasDublicateInRow()
+		#region check if possible Prozess
+		public bool HasDublicateInRows()
 		{
 			for (int i = 0; i < Board.GetLength(0); i++)
 			{
@@ -73,7 +36,7 @@
 			return false;
 		}
 
-		public bool HasDublicateInCol()
+		public bool HasDublicateInColumns()
 		{
 			for (int i = 0; i < Board.GetLength(1); i++)
 			{
@@ -91,7 +54,7 @@
 			return false;
 		}
 
-		public bool HasDublicateInBlock()
+		public bool HasDublicateInBlocks()
 		{
 			for (int i = 0; i < 9; i+=3)
 			{
@@ -131,44 +94,75 @@
 
 			return false;
 		}
+		#endregion
 
-		public bool IsInitialFieldStateFilled(int rowIdx, int colIdx)
+		#region Solving Prozess
+		public bool IsFieldEmpty(int rowIdx, int colIdx) => SolvedBoard[rowIdx, colIdx] == 0;
+
+		public void ClearField(int rowIdx, int colIdx) => SolvedBoard[rowIdx, colIdx] = 0;
+
+		public bool IsSolved()
 		{
-			return OriginalBoard[rowIdx, colIdx] != 0;
-		}
-
-		public void UncoverRandomField()
-		{
-			List<Tuple<int,int>> emptyFields = new List<Tuple<int,int>>();
-
-			for (int i = 0; i < Board.GetLength(0); i++)
+			for (int i = 0; i < SolvedBoard.GetLength(0); i++)
 			{
-				for (int j = 0; j < Board.GetLength(1); j++)
+				for (int j = 0; j < SolvedBoard.GetLength(1); j++)
 				{
-					if (Board[i, j] == 0)
+					if (SolvedBoard[i, j] == 0)
 					{
-						emptyFields.Add(Tuple.Create(i,j));
+						return false;
 					}
 				}
 			}
 
-			if(emptyFields.Count == 0)
-			{
-				return;
-			}
-
-			Random random = new Random();
-			int idx = random.Next(0, emptyFields.Count);
-			Tuple<int, int> fieldIndicies = emptyFields[idx];
-            Console.WriteLine("uncovered field idx: {0}/{1}", fieldIndicies.Item1, fieldIndicies.Item2);
-
-            Board[fieldIndicies.Item1, fieldIndicies.Item2] = 2;
+			return true;
 		}
 
-		public bool IsFieldEmpty(int rowIdx, int colIdx) => Board[rowIdx, colIdx] == 0;
-		public void ChangeNumberOfField(int rowIdx, int colIdx, int number) => Board[rowIdx, colIdx] = number;
+		public bool NumberAtRowPossible(int rowIdx, int number)
+		{
+			for (int i = 0; i < SolvedBoard.GetLength(1); i++)
+			{
+				if (SolvedBoard[rowIdx, i] == number)
+				{
+					return false;
+				}
+			}
 
-		public void ClearField(int rowIdx, int colIdx) => Board[rowIdx, colIdx] = 0;
+			return true;
+		}
+
+		public bool NumberAtCollumnPossible(int colIdx, int number)
+		{
+			for (int i = 0; i < SolvedBoard.GetLength(0); i++)
+			{
+				if (SolvedBoard[i, colIdx] == number)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public bool NumberAtBlockPossible(int rowIdx, int colIdx, int number)
+		{
+			int rowIdxStart = rowIdx / 3 * 3;
+			int colIdxStart = colIdx / 3 * 3;
+
+			for (int i = rowIdxStart; i < rowIdxStart + 2; i++)
+			{
+				for (int j = colIdxStart; j < colIdxStart + 2; j++)
+				{
+					if (SolvedBoard[i, j] == number && (i != rowIdx && j != colIdx))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		#endregion
 
 		public void Print()
 		{
@@ -191,6 +185,78 @@
 					Board[i, j] = OriginalBoard[i, j];
 				}
 			}
+		}
+
+		public bool IsCorrectSoulution()
+		{
+			for (int i = 0; i < Board.GetLength(0); i++)
+			{
+				for (int j = 0; j < Board.GetLength(1); j++)
+				{
+					if(Board[i, j] != SolvedBoard[i, j])
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		public void UncoverSolution()
+		{
+			for (int i = 0; i < Board.GetLength(0); i++)
+			{
+				for (int j = 0; j < Board.GetLength(1); j++)
+				{
+					Board[i, j] = SolvedBoard[i, j];
+				}
+			}
+		}
+
+		public bool IsInitialFieldStateFilled(int rowIdx, int colIdx)
+		{
+			return OriginalBoard[rowIdx, colIdx] != 0;
+		}
+
+		public void ChangeNumberOfField(int rowIdx, int colIdx, int number, bool generateSolution = false)
+		{
+			if (generateSolution)
+			{
+				SolvedBoard[rowIdx, colIdx] = number;
+			}
+			else
+			{
+				Board[rowIdx, colIdx] = number;
+			}
+		}
+
+		public void UncoverRandomField()
+		{
+			List<Tuple<int, int>> emptyFields = new List<Tuple<int, int>>();
+
+			for (int i = 0; i < Board.GetLength(0); i++)
+			{
+				for (int j = 0; j < Board.GetLength(1); j++)
+				{
+					if (Board[i, j] == 0)
+					{
+						emptyFields.Add(Tuple.Create(i, j));
+					}
+				}
+			}
+
+			if (emptyFields.Count == 0)
+			{
+				return;
+			}
+
+			Random random = new Random();
+			int idx = random.Next(0, emptyFields.Count);
+			Tuple<int, int> fieldIndicies = emptyFields[idx];
+			Console.WriteLine("uncovered field idx: {0}/{1}", fieldIndicies.Item1, fieldIndicies.Item2);
+
+			Board[fieldIndicies.Item1, fieldIndicies.Item2] = 2;
 		}
 	}
 }
