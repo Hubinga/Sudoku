@@ -132,6 +132,11 @@
 			return false;
 		}
 
+		public bool IsInitialFieldStateFilled(int rowIdx, int colIdx)
+		{
+			return OriginalBoard[rowIdx, colIdx] != 0;
+		}
+
 		public bool IsFieldEmpty(int rowIdx, int colIdx) => Board[rowIdx, colIdx] == 0;
 		public void ChangeNumberOfField(int rowIdx, int colIdx, int number) => Board[rowIdx, colIdx] = number;
 

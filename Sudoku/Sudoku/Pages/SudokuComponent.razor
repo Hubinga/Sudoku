@@ -63,8 +63,17 @@
 		if (sudoku != null)
 		{
 			Console.WriteLine("rowIdx: {0}, colIdx: {1}", rowIdx, colIdx);
-			activeField.RowIdx = rowIdx;
-			activeField.ColIdx = colIdx;
+			if (sudoku.IsInitialFieldStateFilled(rowIdx, colIdx))
+			{
+				Console.WriteLine("Can't change field value if its initialy filled");
+				activeField.RowIdx = -1;
+				activeField.ColIdx = -1;
+			}
+			else
+			{
+				activeField.RowIdx = rowIdx;
+				activeField.ColIdx = colIdx;
+			}
 		}
 	}
 
