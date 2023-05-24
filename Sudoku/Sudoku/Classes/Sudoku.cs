@@ -137,6 +137,34 @@
 			return OriginalBoard[rowIdx, colIdx] != 0;
 		}
 
+		public void UncoverRandomField()
+		{
+			List<Tuple<int,int>> emptyFields = new List<Tuple<int,int>>();
+
+			for (int i = 0; i < Board.GetLength(0); i++)
+			{
+				for (int j = 0; j < Board.GetLength(1); j++)
+				{
+					if (Board[i, j] == 0)
+					{
+						emptyFields.Add(Tuple.Create(i,j));
+					}
+				}
+			}
+
+			if(emptyFields.Count == 0)
+			{
+				return;
+			}
+
+			Random random = new Random();
+			int idx = random.Next(0, emptyFields.Count);
+			Tuple<int, int> fieldIndicies = emptyFields[idx];
+            Console.WriteLine("uncovered field idx: {0}/{1}", fieldIndicies.Item1, fieldIndicies.Item2);
+
+            Board[fieldIndicies.Item1, fieldIndicies.Item2] = 2;
+		}
+
 		public bool IsFieldEmpty(int rowIdx, int colIdx) => Board[rowIdx, colIdx] == 0;
 		public void ChangeNumberOfField(int rowIdx, int colIdx, int number) => Board[rowIdx, colIdx] = number;
 

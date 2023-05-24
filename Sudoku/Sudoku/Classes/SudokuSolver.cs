@@ -14,6 +14,11 @@
 			return true;
 		}
 
+		public void UncoverRandomField(Sudoku sudoku)
+		{
+			sudoku.UncoverRandomField();
+		}
+
 		public bool IsNumberPossible(Sudoku sudoku, int rowIdx, int colIdx, int number)
 		{
 			//horizontal

@@ -3,6 +3,7 @@
 <div>
 	<button class="button-purple" @onclick="SolveSudoku">Solve</button>
 	<button class="button-purple" @onclick="ResetSudoku">Reset</button>
+	<button class="button-purple" @onclick="GetHint">Hint</button>
 	<label>
 		Upload a sudoku:
 		<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
@@ -148,6 +149,14 @@
 				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
 			}
 
+		}
+	}
+
+	private void GetHint()
+	{
+		if(sudoku != null)
+		{
+			sudoku.UncoverRandomField();
 		}
 	}
 	#endregion
