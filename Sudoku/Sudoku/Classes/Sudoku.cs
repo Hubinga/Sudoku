@@ -93,8 +93,41 @@
 
 		public bool HasDublicateInBlock()
 		{
-			
+			for (int i = 0; i < 9; i+=3)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					if (BlockHasDublicate(i, j * 3))
+					{
+						return true;
+					}
+				}
+			}
 
+			return false;
+		}
+
+		private bool BlockHasDublicate(int rowIdxStart, int colIdxStart)
+		{
+			List<int> numbersInBlock = new List<int>();
+
+			for (int i = rowIdxStart; i < rowIdxStart + 3; i++)
+			{
+				for (int j = colIdxStart; j < colIdxStart + 3; j++)
+				{
+					int currentNumber = Board[i, j];
+
+					if (numbersInBlock.Contains(currentNumber))
+					{
+						return true;
+					}
+
+					if (currentNumber != 0)
+					{
+						numbersInBlock.Add(currentNumber);
+					}
+				}
+			}
 
 			return false;
 		}

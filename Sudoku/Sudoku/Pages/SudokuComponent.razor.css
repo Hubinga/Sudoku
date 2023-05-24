@@ -19,5 +19,7 @@
 
 .tile:focus {
     font-weight:bold;
+    font-size:30px;
+    color:brown;
 }
 
