@@ -1,8 +1,12 @@
 ﻿@using Sudoku.Classes;
-<h3>Sudoku</h3>
-<button @onclick="SolveSudoku">Solve</button>
-<button @onclick="ResetSudoku">Reset</button>
-<InputFile OnChange="@OnInputFileChanged"/>
+<div>
+	<button class="button-purple" @onclick="SolveSudoku">Solve</button>
+	<button class="button-purple" @onclick="ResetSudoku">Reset</button>
+	<label>
+		Upload a sudoku:
+		<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
+	</label>
+</div>
 <section class="board">
 	@{
 		if (sudoku != null)
@@ -13,7 +17,18 @@
 				{
 					int currentRowIdx = i;
 					int currentColIdx = j;
-					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class="tile first-col" @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@sudoku.Board[i, j]</div>
+					string cssClassTag = "tile";
+
+					if(i == 0)
+					{
+						cssClassTag += " tile-firstRow";
+					}
+					if (j == 0)
+					{
+						cssClassTag += " tile-firstCol";
+					}
+
+					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class=@cssClassTag @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@sudoku.Board[i, j]</div>
 				}
 			}
 		}
@@ -112,7 +127,7 @@
 	{
 		if (sudoku != null)
 		{
-			if(sudokuSolver.IsSudokuPossible(sudoku))
+			if (sudokuSolver.IsSudokuPossible(sudoku))
 			{
 				sudokuSolver.SolveSudoku(sudoku);
 			}
@@ -120,7 +135,7 @@
 			{
 				Console.WriteLine("Sudoku not possible");
 			}
-			
+
 		}
 	}
 }
