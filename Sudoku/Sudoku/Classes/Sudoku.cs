@@ -11,11 +11,15 @@
 
 			SolvedBoard = new int[board.GetLength(0), board.GetLength(1)];
 			Array.Copy(board, SolvedBoard, board.Length);
+
+			Solved = false;
 		}
 
 		public int[,] Board { get; private set; }
 		private readonly int[,] OriginalBoard;
-		public readonly int[,] SolvedBoard;
+		private readonly int[,] SolvedBoard;
+
+		public bool Solved { get; set; } = false;
 
 		#region check if possible Prozess
 		public bool HasDublicateInRows()
@@ -189,6 +193,11 @@
 
 		public bool IsCorrectSoulution()
 		{
+			if (!Solved)
+			{
+				throw new Exception("Solving Prozess not yet finished");
+			}
+
 			for (int i = 0; i < Board.GetLength(0); i++)
 			{
 				for (int j = 0; j < Board.GetLength(1); j++)
@@ -203,8 +212,13 @@
 			return true;
 		}
 
-		public void UncoverSolution()
+		public void TryUncoverSolution()
 		{
+			if (!Solved)
+			{
+				throw new Exception("Solving Prozess not yet finished");
+			}
+
 			for (int i = 0; i < Board.GetLength(0); i++)
 			{
 				for (int j = 0; j < Board.GetLength(1); j++)
@@ -231,8 +245,13 @@
 			}
 		}
 
-		public void UncoverRandomField()
+		public void TryUncoverRandomField()
 		{
+			if (!Solved)
+			{
+				throw new Exception("Solving Prozess not yet finished");
+			}
+
 			List<Tuple<int, int>> emptyFields = new List<Tuple<int, int>>();
 
 			for (int i = 0; i < Board.GetLength(0); i++)
@@ -256,7 +275,7 @@
 			Tuple<int, int> fieldIndicies = emptyFields[idx];
 			Console.WriteLine("uncovered field idx: {0}/{1}", fieldIndicies.Item1, fieldIndicies.Item2);
 
-			Board[fieldIndicies.Item1, fieldIndicies.Item2] = 2;
+			Board[fieldIndicies.Item1, fieldIndicies.Item2] = SolvedBoard[fieldIndicies.Item1, fieldIndicies.Item2];
 		}
 	}
 }

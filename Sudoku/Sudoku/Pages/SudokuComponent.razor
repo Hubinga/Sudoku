@@ -24,7 +24,7 @@
 					int currentColIdx = j;
 					string cssClassTag = "tile";
 
-					if(i == 0)
+					if (i == 0)
 					{
 						cssClassTag += " tile-firstRow";
 					}
@@ -138,11 +138,19 @@
 		}
 	}
 
-	private void SolveSudoku()
+	private async void SolveSudoku()
 	{
 		if (sudoku != null)
-		{
-			sudoku.UncoverSolution();
+		{	
+			try
+			{
+				sudoku.TryUncoverSolution();
+			}
+			catch (Exception e)
+			{
+				await DisplayAlert(e.Message);
+				Console.WriteLine(e.Message);
+			}
 		}
 	}
 
@@ -150,24 +158,40 @@
 	{
 		if (sudoku != null)
 		{
-			if (sudoku.IsCorrectSoulution())
+			try
 			{
-				await DisplayAlert("Correct Solution!");
-				Console.WriteLine("Correct Solution!");
+				if (sudoku.IsCorrectSoulution())
+				{
+					await DisplayAlert("Correct Solution!");
+					Console.WriteLine("Correct Solution!");
+				}
+				else
+				{
+					await DisplayAlert("Wrong Solution!");
+					Console.WriteLine("Wrong Solution!");
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				await DisplayAlert("Wrong Solution!");
-				Console.WriteLine("Wrong Solution!");
-			}
+				await DisplayAlert(e.Message);
+				Console.WriteLine(e.Message);
+			}	
 		}
 	}
 
-	private void GetHint()
+	private async void GetHint()
 	{
-		if(sudoku != null)
+		if (sudoku != null)
 		{
-			sudoku.UncoverRandomField();
+			try
+			{
+				sudoku.TryUncoverRandomField();
+			}
+			catch (Exception e)
+			{
+				await DisplayAlert(e.Message);
+				Console.WriteLine(e.Message);
+			}
 		}
 	}
 
