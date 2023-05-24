@@ -126,6 +126,7 @@
 		}
 		catch (Exception ex)
 		{
+			await DisplayAlert(ex.Message);
 			Console.WriteLine(ex.Message);
 		}
 	}

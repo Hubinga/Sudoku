@@ -36,9 +36,9 @@
 
 				return new Sudoku(board);
 			}
-			catch (Exception ex)
-			{
-				throw new Exception(ex.Message);
+			catch (Exception)
+            {
+				throw new Exception("Input Data has wrong format!\nFormat has to be: e.g: 1,0,2,0,3,... (0 = empty field)");
 			}
 		}
 	}

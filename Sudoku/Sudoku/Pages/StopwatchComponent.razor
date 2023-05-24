@@ -1,0 +1,48 @@
+﻿@page "/Stopwatch"
+
+<PageTitle>Stopwatch</PageTitle>
+
+<p>Time: @timeSpan.ToString(@"hh\:mm\:ss")</p>
+<button class="btn btn-primary" @onclick="StartStopwatch">Start</button>
+<button class="btn btn-primary" @onclick="StopStopwatch">Stop</button>
+<button class="btn btn-primary" @onclick="ResetStopwatch">Reset</button>
+
+@code {
+    private int currentCount = 0;
+    private TimeSpan timeSpan;
+    private bool isRunning = false;
+    private DateTime startTime;
+    private Timer timer;
+
+    private void StartStopwatch()
+    {
+        if (!isRunning)
+        {
+            startTime = DateTime.Now - timeSpan;
+            timer = new Timer(UpdateTime, null, 0, 1000);
+            isRunning = true;
+        }
+    }
+
+    private void UpdateTime(object state)
+    {
+        timeSpan = DateTime.Now - startTime;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void StopStopwatch()
+    {
+        if (isRunning)
+        {
+            timer?.Dispose();
+            isRunning = false;
+        }
+    }
+
+    private void ResetStopwatch()
+    {
+        StopStopwatch();
+        timeSpan = TimeSpan.Zero;
+
+    }
+}
