@@ -25,7 +25,7 @@
 			if (sudoku.IsSolved())
 			{
 				sudoku.Print();
-				sudoku.Solved = true;
+				sudoku.SolvingProzessFinished = true;
 				return;
 			}
 

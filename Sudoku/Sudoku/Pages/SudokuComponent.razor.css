@@ -62,5 +62,21 @@
     .button-purple {
         padding: 0 2.6rem;
     }
+    .sudoku-inputs button {
+        margin-bottom: 20px;
+    }
+}
+
+.timer-container {
+    border: 2px solid black;
+    max-width: 200px;
+    align-items: center;
+    font-size: 20px;
+    font-weight:bold;
+    margin-top:30px;
+}
+
+.sudoku-inputs button {
+    margin-right: 20px;
 }
 

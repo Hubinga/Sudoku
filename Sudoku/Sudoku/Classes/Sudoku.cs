@@ -12,6 +12,7 @@
 			SolvedBoard = new int[board.GetLength(0), board.GetLength(1)];
 			Array.Copy(board, SolvedBoard, board.Length);
 
+			SolvingProzessFinished = false;
 			Solved = false;
 		}
 
@@ -19,6 +20,7 @@
 		private readonly int[,] OriginalBoard;
 		private readonly int[,] SolvedBoard;
 
+		public bool SolvingProzessFinished { get; set; } = false;
 		public bool Solved { get; set; } = false;
 
 		#region check if possible Prozess
@@ -193,7 +195,7 @@
 
 		public bool IsCorrectSoulution()
 		{
-			if (!Solved)
+			if (!SolvingProzessFinished)
 			{
 				throw new Exception("Solving Prozess not yet finished");
 			}
@@ -214,7 +216,7 @@
 
 		public void TryUncoverSolution()
 		{
-			if (!Solved)
+			if (!SolvingProzessFinished)
 			{
 				throw new Exception("Solving Prozess not yet finished");
 			}
@@ -247,7 +249,7 @@
 
 		public void TryUncoverRandomField()
 		{
-			if (!Solved)
+			if (!SolvingProzessFinished)
 			{
 				throw new Exception("Solving Prozess not yet finished");
 			}

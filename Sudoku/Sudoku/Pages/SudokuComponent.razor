@@ -1,17 +1,21 @@
 ﻿@using Sudoku.Classes;
 @inject SweetAlertService Swal;
-<div>
-	<button class="button-purple" @onclick="SolveSudoku">Solve</button>
-	<button class="button-purple" @onclick="ResetSudoku">Reset</button>
-	<button class="button-purple" @onclick="GetHint">Hint</button>
-	<button class="button-purple" @onclick="Start">Start</button>
-	<button class="button-purple" @onclick="GetResult">End</button>
+<div class="sudoku-inputs">
+	<div hidden = "@(sudoku!=null)">
+		<label>
+			Upload a sudoku:
+			<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
+		</label>
+	</div>
 	<br/>
-	<label>
-		Upload a sudoku:
-		<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
-	</label>
+	<button class="button-purple" hidden ="@(sudoku==null)" @onclick="Start">Start</button>
+	<button class="button-purple" hidden="@inactive" @onclick="SolveSudoku">Solve</button>
+	<button class="button-purple" hidden="@inactive" @onclick="ResetSudoku">Reset</button>
+	<button class="button-purple" hidden="@inactive" @onclick="GetHint">Hint</button>
+	<button class="button-purple" hidden="@inactive" @onclick="GetResult">End</button>
+	<br/>
 </div>
+<div hidden ="@(!isRunning)" class="timer-container">Time: @timeSpan.ToString(@"hh\:mm\:ss")</div>
 <section class="board">
 	@{
 		if (sudoku != null)
@@ -60,12 +64,10 @@
 
 	private Field activeField = new Field(-1, -1);
 
+	private bool inactive = true;
+
 	#region Helper Methods
 
-	private async Task DisplayAlert(string message)
-	{
-		await Swal.FireAsync(message);
-	}
 	#endregion
 
 	#region Sudoku Methods
@@ -89,7 +91,7 @@
 
 	private void FieldClicked(int rowIdx, int colIdx)
 	{
-		if (sudoku != null)
+		if (sudoku != null && !inactive)
 		{
 			Console.WriteLine("rowIdx: {0}, colIdx: {1}", rowIdx, colIdx);
 			if (sudoku.IsInitialFieldStateFilled(rowIdx, colIdx))
@@ -123,10 +125,11 @@
 		try
 		{
 			sudoku = sudokuCreator.LoadFromFile(fileContent);
+			//await AlertBox.DisplayAlert(Swal, "Press start and try to solve it!");
 		}
 		catch (Exception ex)
 		{
-			await DisplayAlert(ex.Message);
+			await AlertBox.DisplayAlert(Swal,ex.Message);
 			Console.WriteLine(ex.Message);
 		}
 	}
@@ -142,14 +145,14 @@
 	private async void SolveSudoku()
 	{
 		if (sudoku != null)
-		{	
+		{
 			try
 			{
 				sudoku.TryUncoverSolution();
 			}
 			catch (Exception e)
 			{
-				await DisplayAlert(e.Message);
+				await AlertBox.DisplayAlert(Swal, e.Message);
 				Console.WriteLine(e.Message);
 			}
 		}
@@ -163,20 +166,40 @@
 			{
 				if (sudoku.IsCorrectSoulution())
 				{
-					await DisplayAlert("Correct Solution!");
+					ResetStopwatch();
+					await AlertBox.DisplayAlert(Swal, "Correct Solution!\n Your time: " + (int)timeInSeconds + " seconds");
 					Console.WriteLine("Correct Solution!");
+					inactive = true;
+					sudoku.Solved = true;
+					InvokeAsync(StateHasChanged);
+
 				}
 				else
 				{
-					await DisplayAlert("Wrong Solution!");
+					var result = await AlertBox.DisplayAlertWithButtons(Swal, "Wrong Solution! Continue or Cancel?", "Continue", "Show Solution");
+
+					//continue
+					if (!string.IsNullOrEmpty(result.Value))
+					{
+
+					}
+					else
+					{
+						SolveSudoku();
+						ResetStopwatch();
+						inactive = true;
+						sudoku.Solved = true;
+						InvokeAsync(StateHasChanged);
+					}
+
 					Console.WriteLine("Wrong Solution!");
 				}
 			}
 			catch (Exception e)
 			{
-				await DisplayAlert(e.Message);
+				await AlertBox.DisplayAlert(Swal, e.Message);
 				Console.WriteLine(e.Message);
-			}	
+			}
 		}
 	}
 
@@ -190,7 +213,7 @@
 			}
 			catch (Exception e)
 			{
-				await DisplayAlert(e.Message);
+				await AlertBox.DisplayAlert(Swal, e.Message);
 				Console.WriteLine(e.Message);
 			}
 		}
@@ -204,13 +227,55 @@
 			{
 				//start generate solution in background
 				sudokuSolver.GenerateSolution(sudoku);
+				StartStopwatch();
+				inactive = false;
 			}
 			else
 			{
-				await DisplayAlert("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+				await AlertBox.DisplayAlert(Swal, "Sudoku not possible to solve (dublicate in collumn, row or block)!");
 				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
 			}
 		}
+	}
+	#endregion
+
+	#region StopWatch Component
+	private TimeSpan timeSpan;
+	private bool isRunning = false;
+	private DateTime startTime;
+	private Timer timer;
+	private double timeInSeconds;
+
+	private void StartStopwatch()
+	{
+		if (!isRunning)
+		{
+			startTime = DateTime.Now - timeSpan;
+			timer = new Timer(UpdateTime, null, 0, 1000);
+			isRunning = true;
+		}
+	}
+
+	private void UpdateTime(object state)
+	{
+		timeSpan = DateTime.Now - startTime;
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void StopStopwatch()
+	{
+		if (isRunning)
+		{
+			timer?.Dispose();
+			isRunning = false;
+		}
+	}
+
+	private void ResetStopwatch()
+	{
+		StopStopwatch();
+		timeInSeconds = timeSpan.TotalSeconds;
+		timeSpan = TimeSpan.Zero;
 	}
 	#endregion
 }
