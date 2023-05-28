@@ -12,12 +12,15 @@ namespace Sudoku.Models
 		public string? Board { get; set; }
 
 		[StringLength(161, MinimumLength = 161)]
-		[Required]
+		[Required]	
+		[RegularExpression(@"^\d(\,\d)*$")]
 		[Display(Name = "Original Board")]
 		public string? OriginalBoard { get; set; }
 
 		[StringLength(161, MinimumLength = 161)]
 		public string? SolvedBoard { get; set; }
+
+		[Required]
 		public string? Difficulty { get; set; }
 		public bool Solved { get; set; }
 		public int Time { get; set; }

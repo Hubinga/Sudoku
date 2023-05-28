@@ -2,6 +2,7 @@
 @using Sudoku.Classes;
 @using Sudoku.Models;
 @inherits OwningComponentBase<DbService>
+@using Microsoft.AspNetCore.Components.Forms
 
 <h3>Collection</h3>
 <div>
@@ -39,18 +40,54 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3 class="modal-title">Edit Forecast</h3>
+					<h3 class="modal-title">Edit Sudoku</h3>
 					<!-- Button to close the popup -->
 					<button type="button" class="close"@onclick="ClosePopup">
 						<span aria-hidden="true">X</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<input class="form-control" type="text" placeholder="Board(1,2,0,...)" @bind="currentSudokuModel.OriginalBoard" />
-					<input class="form-control" type="text" placeholder="Difficulty" @bind="currentSudokuModel.Difficulty" />
-					<input class="form-control" type="text" placeholder="Time" @bind="currentSudokuModel.Time" />
+					<div>
+						<label>Upload a sudoku:
+							<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
+						</label>
+					</div>
 					<br/>
-					<button class="btn btn-success"@onclick="SaveSudoku">Save</button>&nbsp;
+
+					<EditForm Model="@currentSudokuModel" OnValidSubmit="@SaveSudoku">
+						<DataAnnotationsValidator />
+						<ValidationSummary />
+						<p>
+							<label>
+								Original Board:
+								<InputText id="OriginalBoard" @bind-Value="currentSudokuModel.OriginalBoard"/>
+							</label>
+						</p>
+						<p>
+							<label>
+								Solved (optional):
+								<InputCheckbox id="Solved" @bind-Value="currentSudokuModel.Solved"/>
+							</label>
+						</p>
+						<p>
+							<label>
+								Time in seconds (optional):
+								<InputNumber id="Time" @bind-Value="currentSudokuModel.Time"/>
+							</label>
+						</p>
+						<p>
+							<label>
+								Difficulty:
+								<InputSelect Name="Difficulty" @bind-Value="currentSudokuModel.Difficulty">
+									<option value="Easy">Easy</option>
+									<option value="Medium">Medium</option>
+									<option value="Hard">Hard</option>
+								</InputSelect>
+							</label>
+						</p>
+						<br/>
+							<button type="submit">Save</button>&nbsp;
+					</EditForm>
 					@if (currentSudokuModel.Id > 0)
 					{                                    
 						<button class="btn btn-danger" @onclick="DeleteSudoku">Delete</button>
@@ -60,6 +97,7 @@
 		</div>
 	</div>
 }
+
 @code {
 
 	List<SudokuModel> sudokuModels = new List<SudokuModel>();
@@ -67,6 +105,22 @@
 	protected override async Task OnInitializedAsync()
 	{
 		sudokuModels = await @Service.GetSudokuModelsAsync();
+	}
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+	{
+		//check for file type
+		if (currentSudokuModel != null)
+		{
+			var file = e.File;
+			long maxsize = 512000;
+
+			var buffer = new byte[file.Size];
+			await file.OpenReadStream(maxsize).ReadAsync(buffer);
+			string fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+
+			currentSudokuModel.OriginalBoard = fileContent;
+		}
 	}
 
 	SudokuModel currentSudokuModel = new SudokuModel();
