@@ -20,14 +20,16 @@
 		@foreach (var item in sudokuModels)
 		{
 			<tr>
-				<td>@item.OriginalBoard</td>
+				<td class = "table-data">@item.OriginalBoard</td>
 				<td>@item.Difficulty</td>
 				<td>@item.Solved</td>
 				<td>@item.Time</td>
 				<td>
 					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
+					<button class="btn btn-primary" >Deatils</button>
+					<button class="btn btn-primary" >Solve</button>
 				</td>
-				</tr>
+			</tr>
 		}
 		</tbody>
 	</table>
@@ -86,7 +88,7 @@
 							</label>
 						</p>
 						<br/>
-							<button type="submit">Save</button>&nbsp;
+						<button class="btn btn-success" type="submit">Save</button>
 					</EditForm>
 					@if (currentSudokuModel.Id > 0)
 					{                                    
@@ -133,41 +135,33 @@
 	}
 	void AddNewSudoku()
 	{
-		// Make new forecast
 		currentSudokuModel = new SudokuModel();
 		// Set Id to 0 so we know it is a new record
 		currentSudokuModel.Id = 0;
-		// Open the Popup
 		ShowPopup = true;
 	}
 
 	void EditSudoku(SudokuModel sudokuModel)
 	{
-		// Set the selected forecast
-		// as the current forecast
+		// Set the selected Sudoku as the current Sudoku
 		currentSudokuModel = sudokuModel;
-		// Open the Popup
 		ShowPopup = true;
 	}
 
 	async Task DeleteSudoku()
 	{
-		// Close the Popup
 		ShowPopup = false;
-		// Delete the forecast
 		var result = @Service.DeleteSudokuModelAsync(currentSudokuModel);
-		// Get the forecasts for the current user
+		//refresh
 		sudokuModels = await @Service.GetSudokuModelsAsync();
 	}
 
 	async Task SaveSudoku()
 	{
-		// Close the Popup
 		ShowPopup = false;
-		// A new forecast will have the Id set to 0
+		// A new sudoku will have the Id set to 0
 		if (currentSudokuModel.Id == 0)
 		{
-			// Create new forecast
 			SudokuModel newSudokuModel = new SudokuModel();
 			newSudokuModel.OriginalBoard = currentSudokuModel.OriginalBoard;
 			newSudokuModel.Difficulty = currentSudokuModel.Difficulty;
@@ -181,7 +175,7 @@
 			// This is an update
 			var result = @Service.UpdateSudokuModelAsync(currentSudokuModel);
 		}
-		// Get the forecasts for the current user
+		// refresh
 		sudokuModels = await @Service.GetSudokuModelsAsync();
 	}
 }

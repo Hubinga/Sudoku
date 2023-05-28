@@ -1,0 +1,35 @@
+﻿@page "/Detail"
+@using Sudoku.Classes;
+@using Sudoku.Models;
+@inherits OwningComponentBase<DbService>
+
+@{
+	if(sudoku != null)
+	{
+		<h3>Original Board</h3>
+		<BoardComponent Board="@sudoku.OriginalBoard"></BoardComponent>
+		if (sudoku.Solved)
+		{
+			<h3>Solved Board</h3>
+			<BoardComponent Board="@sudoku.SolvedBoard"></BoardComponent>
+		}
+		<div>
+			<label>Difficulty:</label>
+			<p>@currentSudokuModel.Difficulty</p>
+		</div>
+		<div>
+			<label>Time:</label>
+			<p>@currentSudokuModel.Time</p>
+		</div>
+	}
+}
+
+@code {
+	private SudokuModel currentSudokuModel = new SudokuModel();
+	private Sudoku? sudoku = null;
+
+	protected override async Task OnInitializedAsync()
+	{
+		throw new NotImplementedException();
+	}
+}

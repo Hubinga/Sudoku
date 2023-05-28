@@ -17,8 +17,8 @@
 		}
 
 		public int[,] Board { get; private set; }
-		private readonly int[,] OriginalBoard;
-		private readonly int[,] SolvedBoard;
+		public readonly int[,] OriginalBoard;
+		public readonly int[,] SolvedBoard;
 
 		public bool SolvingProzessFinished { get; set; } = false;
 		public bool Solved { get; set; } = false;

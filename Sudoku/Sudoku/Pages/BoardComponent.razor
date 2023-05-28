@@ -1,0 +1,27 @@
+﻿@using Sudoku.Classes;
+<div>
+	@{
+		for (int i = 0; i < Board.GetLength(0); i++)
+		{
+			for (int j = 0; j < Board.GetLength(1); j++)
+			{
+				string cssClassTag = "tile";
+
+				if (i == 0)
+				{
+					cssClassTag += " tile-firstRow";
+				}
+				if (j == 0)
+				{
+					cssClassTag += " tile-firstCol";
+				}
+
+				<div >Board[i, j]</div>
+			}
+		}
+	}
+</div>
+@code {
+	[Parameter]
+	public int[,] Board { get; set; } = new int[9, 9];
+}
