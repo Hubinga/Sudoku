@@ -1,0 +1,133 @@
+﻿@page "/Collection"
+@using Sudoku.Classes;
+@using Sudoku.Models;
+@inherits OwningComponentBase<DbService>
+
+<h3>Collection</h3>
+<div>
+	<table class="table">	
+		<thead>
+			<tr>
+				<th>OriginalBoard</th>
+				<th>Difficulty</th>
+				<th>Solved</th>
+				<th>Time</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		@foreach (var item in sudokuModels)
+		{
+			<tr>
+				<td>@item.OriginalBoard</td>
+				<td>@item.Difficulty</td>
+				<td>@item.Solved</td>
+				<td>@item.Time</td>
+				<td>
+					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
+				</td>
+				</tr>
+		}
+		</tbody>
+	</table>
+	<button class="btn btn-success" @onclick="AddNewSudoku">Add New Sudoku</button>
+</div>
+
+@if (ShowPopup)
+{
+	<div class="modal" tabindex="-1" style="display:block" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">Edit Forecast</h3>
+					<!-- Button to close the popup -->
+					<button type="button" class="close"@onclick="ClosePopup">
+						<span aria-hidden="true">X</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<input class="form-control" type="text" placeholder="Board(1,2,0,...)" @bind="currentSudokuModel.OriginalBoard" />
+					<input class="form-control" type="text" placeholder="Difficulty" @bind="currentSudokuModel.Difficulty" />
+					<input class="form-control" type="text" placeholder="Time" @bind="currentSudokuModel.Time" />
+					<br/>
+					<button class="btn btn-success"@onclick="SaveSudoku">Save</button>&nbsp;
+					@if (currentSudokuModel.Id > 0)
+					{                                    
+						<button class="btn btn-danger" @onclick="DeleteSudoku">Delete</button>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+}
+@code {
+
+	List<SudokuModel> sudokuModels = new List<SudokuModel>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		sudokuModels = await @Service.GetSudokuModelsAsync();
+	}
+
+	SudokuModel currentSudokuModel = new SudokuModel();
+	bool ShowPopup = false;
+
+	void ClosePopup()
+	{
+		// Close the Popup
+		ShowPopup = false;
+	}
+	void AddNewSudoku()
+	{
+		// Make new forecast
+		currentSudokuModel = new SudokuModel();
+		// Set Id to 0 so we know it is a new record
+		currentSudokuModel.Id = 0;
+		// Open the Popup
+		ShowPopup = true;
+	}
+
+	void EditSudoku(SudokuModel sudokuModel)
+	{
+		// Set the selected forecast
+		// as the current forecast
+		currentSudokuModel = sudokuModel;
+		// Open the Popup
+		ShowPopup = true;
+	}
+
+	async Task DeleteSudoku()
+	{
+		// Close the Popup
+		ShowPopup = false;
+		// Delete the forecast
+		var result = @Service.DeleteSudokuModelAsync(currentSudokuModel);
+		// Get the forecasts for the current user
+		sudokuModels = await @Service.GetSudokuModelsAsync();
+	}
+
+	async Task SaveSudoku()
+	{
+		// Close the Popup
+		ShowPopup = false;
+		// A new forecast will have the Id set to 0
+		if (currentSudokuModel.Id == 0)
+		{
+			// Create new forecast
+			SudokuModel newSudokuModel = new SudokuModel();
+			newSudokuModel.OriginalBoard = currentSudokuModel.OriginalBoard;
+			newSudokuModel.Difficulty = currentSudokuModel.Difficulty;
+			newSudokuModel.Time = currentSudokuModel.Time;
+			newSudokuModel.Solved = currentSudokuModel.Solved;
+			// Save the result
+			var result = @Service.AddSudokuModelAsync(newSudokuModel);
+		}
+		else
+		{
+			// This is an update
+			var result = @Service.UpdateSudokuModelAsync(currentSudokuModel);
+		}
+		// Get the forecasts for the current user
+		sudokuModels = await @Service.GetSudokuModelsAsync();
+	}
+}
