@@ -226,8 +226,16 @@
 		{
 			if (sudokuSolver.IsSudokuPossible(sudoku))
 			{
-				//start generate solution in background
-				sudokuSolver.GenerateSolution(sudoku);
+
+				var action = new Action(() =>
+				{
+					//start generate solution in background
+					sudokuSolver.GenerateSolution(sudoku);
+				});
+
+				Task generateSolutionTask = new Task(action);
+				generateSolutionTask.Start();
+
 				StartStopwatch();
 				inactive = false;
 			}

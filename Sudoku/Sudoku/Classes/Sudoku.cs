@@ -193,15 +193,20 @@
 
 		public void Print()
 		{
+			string solvedBoardAsString = "";
+
 			for (int i = 0; i < SolvedBoard.GetLength(0); i++)
 			{
 				for (int j = 0; j < SolvedBoard.GetLength(1); j++)
 				{
 					Console.Write(SolvedBoard[i,j] + " ");
+					solvedBoardAsString += $"{SolvedBoard[i,j]},";
 				}
 				Console.WriteLine();
 			}
-		}
+
+            Console.WriteLine(solvedBoardAsString);
+        }
 
 		public void Reset()
 		{
