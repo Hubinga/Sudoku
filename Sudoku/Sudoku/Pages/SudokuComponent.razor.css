@@ -53,6 +53,13 @@
     touch-action: manipulation;
 }
 
+ .button-purple:disabled
+{
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
 .button-purple:hover {
     box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
     transition-duration: .1s;

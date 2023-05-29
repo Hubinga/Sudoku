@@ -8,11 +8,11 @@
 		</label>
 	</div>
 	<br/>
-	<button class="button-purple" hidden ="@(sudoku==null)" @onclick="Start">Start</button>
-	<button class="button-purple" hidden="@inactive" @onclick="SolveSudoku">Solve</button>
+	<button class="button-purple" hidden ="@(sudoku==null)" disabled="@(!inactive)" @onclick="Start">Start</button>
+	<!--<button class="button-purple" hidden="@inactive" @onclick="SolveSudoku">Solve</button>-->
 	<button class="button-purple" hidden="@inactive" @onclick="ResetSudoku">Reset</button>
-	<button class="button-purple" hidden="@inactive" @onclick="GetHint">Hint</button>
-	<button class="button-purple" hidden="@inactive" @onclick="GetResult">End</button>
+	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetHint">Hint</button>
+	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetResult">End</button>
 	<br/>
 </div>
 <div hidden ="@(!isRunning)" class="timer-container">Time: @timeSpan.ToString(@"hh\:mm\:ss")</div>
@@ -65,6 +65,7 @@
 	private Field activeField = new Field(-1, -1);
 
 	private bool inactive = true;
+	private bool solutionDisplayed = false;
 
 	#region Helper Methods
 
@@ -176,12 +177,14 @@
 				}
 				else
 				{
+					//pause
+					StopStopwatch();
 					var result = await AlertBox.DisplayAlertWithButtons(Swal, "Wrong Solution! Continue or Cancel?", "Continue", "Show Solution");
 
 					//continue
 					if (!string.IsNullOrEmpty(result.Value))
 					{
-
+						StartStopwatch();
 					}
 					else
 					{

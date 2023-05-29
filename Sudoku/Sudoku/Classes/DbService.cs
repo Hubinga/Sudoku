@@ -16,7 +16,12 @@ namespace Sudoku.Classes
             return await _context.SudokuModel.AsNoTracking().ToListAsync();
         }
 
-        public Task<SudokuModel> AddSudokuModelAsync(SudokuModel sudokuModel)
+		public async Task<SudokuModel> GetSudokuModelAsync(int id)
+		{
+			return await _context.SudokuModel.Where(s => s.Id == id).FirstOrDefaultAsync();
+		}
+
+		public Task<SudokuModel> AddSudokuModelAsync(SudokuModel sudokuModel)
         {
             _context.SudokuModel.Add(sudokuModel);
             _context.SaveChanges();

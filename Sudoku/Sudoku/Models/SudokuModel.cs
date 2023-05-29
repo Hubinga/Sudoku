@@ -18,6 +18,7 @@ namespace Sudoku.Models
 		public string? OriginalBoard { get; set; }
 
 		[StringLength(161, MinimumLength = 161)]
+		[RegularExpression(@"^\d(\,\d)*$")]
 		public string? SolvedBoard { get; set; }
 
 		[Required]

@@ -1,6 +1,7 @@
 ﻿@page "/Collection"
 @using Sudoku.Classes;
 @using Sudoku.Models;
+@inject NavigationManager NavigationManager
 @inherits OwningComponentBase<DbService>
 @using Microsoft.AspNetCore.Components.Forms
 
@@ -9,9 +10,9 @@
 	<table class="table">	
 		<thead>
 			<tr>
-				<th>OriginalBoard</th>
+				<th>Original Board</th>
+				<th>Solved Board</th>
 				<th>Difficulty</th>
-				<th>Solved</th>
 				<th>Time</th>
 				<th></th>
 			</tr>
@@ -19,15 +20,19 @@
 		<tbody>
 		@foreach (var item in sudokuModels)
 		{
+			string url = "collection/" + item.Id;
+
 			<tr>
 				<td class = "table-data">@item.OriginalBoard</td>
+				<td class = "table-data">@item.SolvedBoard</td>
 				<td>@item.Difficulty</td>
-				<td>@item.Solved</td>
 				<td>@item.Time</td>
 				<td>
 					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
-					<button class="btn btn-primary" >Deatils</button>
 					<button class="btn btn-primary" >Solve</button>
+					<div>
+						<NavLink href="@url" target="_blank">Detail</NavLink>
+					</div>				
 				</td>
 			</tr>
 		}
@@ -67,8 +72,8 @@
 						</p>
 						<p>
 							<label>
-								Solved (optional):
-								<InputCheckbox id="Solved" @bind-Value="currentSudokuModel.Solved"/>
+								 Solved Board (optional):
+								<InputText id="SolvedBoard" @bind-Value="currentSudokuModel.SolvedBoard"/>
 							</label>
 						</p>
 						<p>

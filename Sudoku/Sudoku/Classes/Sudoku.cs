@@ -16,6 +16,27 @@
 			Solved = false;
 		}
 
+		public Sudoku(int[,] originalBoard, int[,] solvedBoard, bool solved)
+		{
+			OriginalBoard = originalBoard;
+
+			Board = new int[originalBoard.GetLength(0), originalBoard.GetLength(1)];
+			Array.Copy(originalBoard, Board, originalBoard.Length);
+
+			if (solved)
+			{
+				SolvedBoard = solvedBoard;
+			}
+			else
+			{
+				SolvedBoard = new int[originalBoard.GetLength(0), originalBoard.GetLength(1)];
+				Array.Copy(originalBoard, SolvedBoard, originalBoard.Length);
+			}
+
+			SolvingProzessFinished = solved;
+			Solved = solved;
+		}
+
 		public int[,] Board { get; private set; }
 		public readonly int[,] OriginalBoard;
 		public readonly int[,] SolvedBoard;
@@ -172,11 +193,11 @@
 
 		public void Print()
 		{
-			for (int i = 0; i < Board.GetLength(0); i++)
+			for (int i = 0; i < SolvedBoard.GetLength(0); i++)
 			{
-				for (int j = 0; j < Board.GetLength(1); j++)
+				for (int j = 0; j < SolvedBoard.GetLength(1); j++)
 				{
-					Console.Write(Board[i,j] + " ");
+					Console.Write(SolvedBoard[i,j] + " ");
 				}
 				Console.WriteLine();
 			}

@@ -1,5 +1,5 @@
 ﻿@using Sudoku.Classes;
-<div>
+<section class="board">
 	@{
 		for (int i = 0; i < Board.GetLength(0); i++)
 		{
@@ -16,11 +16,11 @@
 					cssClassTag += " tile-firstCol";
 				}
 
-				<div >Board[i, j]</div>
+				<div class=@cssClassTag>@Board[i, j]</div>
 			}
 		}
 	}
-</div>
+</section>
 @code {
 	[Parameter]
 	public int[,] Board { get; set; } = new int[9, 9];

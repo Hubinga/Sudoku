@@ -1,4 +1,5 @@
-﻿@page "/Detail"
+﻿@page "/Collection/{Id:int}"
+@inject NavigationManager NavigationManager
 @using Sudoku.Classes;
 @using Sudoku.Models;
 @inherits OwningComponentBase<DbService>
@@ -6,6 +7,11 @@
 @{
 	if(sudoku != null)
 	{
+		<div>
+			<p>Difficulty: @currentSudokuModel.Difficulty</p
+			<p>Time: @currentSudokuModel.Time</p	
+		</div>
+
 		<h3>Original Board</h3>
 		<BoardComponent Board="@sudoku.OriginalBoard"></BoardComponent>
 		if (sudoku.Solved)
@@ -13,23 +19,38 @@
 			<h3>Solved Board</h3>
 			<BoardComponent Board="@sudoku.SolvedBoard"></BoardComponent>
 		}
-		<div>
-			<label>Difficulty:</label>
-			<p>@currentSudokuModel.Difficulty</p>
-		</div>
-		<div>
-			<label>Time:</label>
-			<p>@currentSudokuModel.Time</p>
-		</div>
 	}
 }
+<div>
+  <NavLink href="collection" target="_blank">Back</NavLink>
+</div>
 
 @code {
 	private SudokuModel currentSudokuModel = new SudokuModel();
 	private Sudoku? sudoku = null;
+	[Parameter]
+	public int Id { get; set; }
+	private SudokuCreator sudokuCreator = new SudokuCreator();
 
 	protected override async Task OnInitializedAsync()
 	{
-		throw new NotImplementedException();
+		currentSudokuModel = await @Service.GetSudokuModelAsync(Id);
+
+		if(currentSudokuModel != null)
+		{
+			int[,] originalBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.OriginalBoard.Split(","));
+
+			//sudoku solved
+			if(currentSudokuModel.SolvedBoard != null)
+			{
+				int[,] solvedBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.SolvedBoard.Split(","));
+				sudoku = new Sudoku(originalBoard, solvedBoard, currentSudokuModel.Solved);
+			}
+			else
+			{
+				//sudoku not yet solved
+				sudoku = new Sudoku(originalBoard, originalBoard, currentSudokuModel.Solved);
+			}
+		}
 	}
 }
