@@ -1,5 +1,7 @@
 ﻿@using Sudoku.Classes;
+@using Sudoku.Models;
 @inject SweetAlertService Swal;
+@inherits OwningComponentBase<DbService>
 <div class="sudoku-inputs">
 	<div hidden = "@(sudoku!=null && !sudoku.Solved)">
 		<label>
@@ -13,6 +15,7 @@
 	<button class="button-purple" hidden="@inactive" @onclick="ResetSudoku">Reset</button>
 	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetHint">Hint</button>
 	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetResult">End</button>
+	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="Save">Save</button>
 	<br/>
 </div>
 <div hidden ="@(!isRunning)" class="timer-container">Time: @timeSpan.ToString(@"hh\:mm\:ss")</div>
@@ -243,6 +246,35 @@
 			{
 				await AlertBox.DisplayAlert(Swal, "Sudoku not possible to solve (dublicate in collumn, row or block)!");
 				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+			}
+		}
+	}
+
+	private async Task Save()
+	{
+		if (sudoku != null)
+		{
+			SudokuModel sudokuModel = new SudokuModel();
+			sudokuModel.Time = (int)timeSpan.TotalSeconds;
+			sudokuModel.CurrentBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.Board);
+			sudokuModel.OriginalBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.OriginalBoard);
+			sudokuModel.Difficulty = "Medium";
+
+			if (sudoku.Solved)
+			{
+				sudokuModel.SolvedBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.SolvedBoard);
+				sudokuModel.Solved = true;
+			}
+
+			var result = @Service.AddSudokuModelAsync(sudokuModel);
+
+			if(result != null)
+			{
+				await AlertBox.DisplayAlert(Swal, "Sudoku successfully saved!");
+			}
+			else
+			{
+				await AlertBox.DisplayError(Swal, "Error while saving sudoku!");
 			}
 		}
 	}

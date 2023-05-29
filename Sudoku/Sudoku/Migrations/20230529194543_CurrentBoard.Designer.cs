@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sudoku.Data;
 
@@ -10,9 +11,11 @@ using Sudoku.Data;
 namespace Sudoku.Migrations
 {
     [DbContext(typeof(SudokuContext))]
-    partial class SudokuContextModelSnapshot : ModelSnapshot
+    [Migration("20230529194543_CurrentBoard")]
+    partial class CurrentBoard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

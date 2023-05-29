@@ -48,5 +48,20 @@
 				throw new Exception("Input Data has wrong format!\nFormat has to be: e.g: 1,0,2,0,3,... (0 = empty field)");
 			}
 		}
+
+		public string ConvertIntArrayToBoardString(int[,] board)
+		{
+			string numbers = "";
+
+			for(int i = 0;i < board.GetLength(0);i++)
+			{
+				for (int j = 0; j < board.GetLength(0); j++)
+				{
+					numbers += $"{board[i, j]},";
+				}
+			}
+
+			return numbers.Substring(0, numbers.Length - 1);
+		}
 	}
 }
