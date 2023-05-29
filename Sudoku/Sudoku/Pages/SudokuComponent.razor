@@ -1,7 +1,7 @@
 ﻿@using Sudoku.Classes;
 @inject SweetAlertService Swal;
 <div class="sudoku-inputs">
-	<div hidden = "@(sudoku!=null)">
+	<div hidden = "@(sudoku!=null && !sudoku.Solved)">
 		<label>
 			Upload a sudoku:
 			<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
@@ -65,7 +65,6 @@
 	private Field activeField = new Field(-1, -1);
 
 	private bool inactive = true;
-	private bool solutionDisplayed = false;
 
 	#region Helper Methods
 
@@ -173,7 +172,6 @@
 					inactive = true;
 					sudoku.Solved = true;
 					InvokeAsync(StateHasChanged);
-
 				}
 				else
 				{
