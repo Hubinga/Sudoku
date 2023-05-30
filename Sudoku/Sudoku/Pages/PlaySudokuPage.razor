@@ -1,7 +1,10 @@
-﻿@using Sudoku.Classes;
+﻿@page "/PlaySudoku"
+@using Sudoku.Classes;
 @using Sudoku.Models;
 @inject SweetAlertService Swal;
 @inherits OwningComponentBase<DbService>
+<PageTitle>Play Sudoku</PageTitle>
+<h1>Upload a sudoku to start!</h1>
 <div class="sudoku-inputs">
 	<div hidden = "@(sudoku!=null && !sudoku.Solved)">
 		<label>
@@ -11,7 +14,6 @@
 	</div>
 	<br/>
 	<button class="button-purple" hidden ="@(sudoku==null)" disabled="@(!inactive)" @onclick="Start">Start</button>
-	<!--<button class="button-purple" hidden="@inactive" @onclick="SolveSudoku">Solve</button>-->
 	<button class="button-purple" hidden="@inactive" @onclick="ResetSudoku">Reset</button>
 	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetHint">Hint</button>
 	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetResult">End</button>
@@ -48,7 +50,6 @@
 </section>
 
 @code {
-
 	private struct Field
 	{
 		public int RowIdx;
@@ -73,16 +74,17 @@
 
 	#endregion
 
-	#region Sudoku Methods
+	#region Board Methods
 
+	//change number of selected field
 	private void KeyboardEventHandler(KeyboardEventArgs args)
 	{
 		if (sudoku != null && activeField.RowIdx != -1 && activeField.ColIdx != -1)
 		{
 			string key = args.Key;
 
-			Console.WriteLine("Key Pressed is " + key);
-			Console.WriteLine("Event Type " + args.Type);
+			//Console.WriteLine("Key Pressed is " + key);
+			//Console.WriteLine("Event Type " + args.Type);
 
 			int inputNumber;
 			if (int.TryParse(key, out inputNumber))
@@ -92,14 +94,16 @@
 		}
 	}
 
+	//set selected field
 	private void FieldClicked(int rowIdx, int colIdx)
 	{
 		if (sudoku != null && !inactive)
 		{
-			Console.WriteLine("rowIdx: {0}, colIdx: {1}", rowIdx, colIdx);
+			//Console.WriteLine("rowIdx: {0}, colIdx: {1}", rowIdx, colIdx);
+			//avoid changing field if its initially filled
 			if (sudoku.IsInitialFieldStateFilled(rowIdx, colIdx))
 			{
-				Console.WriteLine("Can't change field value if its initialy filled");
+				//Console.WriteLine("Can't change field value if its initialy filled");
 				activeField.RowIdx = -1;
 				activeField.ColIdx = -1;
 			}
@@ -114,6 +118,7 @@
 
 	#region Button Methods
 
+	//upload sudoku
 	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
 	{
 		//check for file type
@@ -169,11 +174,8 @@
 			{
 				if (sudoku.IsCorrectSoulution())
 				{
-					ResetStopwatch();
+					StopSudokuProzess();
 					await AlertBox.DisplayAlert(Swal, "Correct Solution!\n Your time: " + (int)timeInSeconds + " seconds");
-					Console.WriteLine("Correct Solution!");
-					inactive = true;
-					sudoku.Solved = true;
 					InvokeAsync(StateHasChanged);
 				}
 				else
@@ -187,24 +189,27 @@
 					{
 						StartStopwatch();
 					}
+					//end
 					else
 					{
 						SolveSudoku();
-						ResetStopwatch();
-						inactive = true;
-						sudoku.Solved = true;
+						StopSudokuProzess();
 						InvokeAsync(StateHasChanged);
 					}
-
-					Console.WriteLine("Wrong Solution!");
 				}
 			}
 			catch (Exception e)
 			{
-				await AlertBox.DisplayAlert(Swal, e.Message);
-				Console.WriteLine(e.Message);
+				await AlertBox.DisplayError(Swal, e.Message);
 			}
 		}
+	}
+
+	private void StopSudokuProzess()
+	{
+		ResetStopwatch();
+		inactive = true;
+		sudoku.Solved = true;
 	}
 
 	private async void GetHint()
@@ -217,8 +222,7 @@
 			}
 			catch (Exception e)
 			{
-				await AlertBox.DisplayAlert(Swal, e.Message);
-				Console.WriteLine(e.Message);
+				await AlertBox.DisplayError(Swal, e.Message);
 			}
 		}
 	}
@@ -229,14 +233,13 @@
 		{
 			if (sudokuSolver.IsSudokuPossible(sudoku))
 			{
-
 				var action = new Action(() =>
 				{
-					//start generate solution in background
 					sudokuSolver.GenerateSolution(sudoku);
 				});
 
 				Task generateSolutionTask = new Task(action);
+				//start generate solution in background
 				generateSolutionTask.Start();
 
 				StartStopwatch();
@@ -245,10 +248,11 @@
 			else
 			{
 				await AlertBox.DisplayAlert(Swal, "Sudoku not possible to solve (dublicate in collumn, row or block)!");
-				Console.WriteLine("Sudoku not possible to solve (dublicate in collumn, row or block)!");
 			}
 		}
 	}
+
+	int currentSudokuModelId = -1;
 
 	private async Task Save()
 	{
@@ -266,9 +270,20 @@
 				sudokuModel.Solved = true;
 			}
 
-			var result = @Service.AddSudokuModelAsync(sudokuModel);
+			Task? result = null;
 
-			if(result != null)
+			//not yet saved: new entry
+			if(currentSudokuModelId == -1)
+			{
+				result = @Service.AddSudokuModelAsync(sudokuModel);
+			}
+			//already saved: update entry
+			else
+			{
+				result = @Service.UpdateSudokuModelAsync(sudokuModel);
+			}
+
+			if (result != null)
 			{
 				await AlertBox.DisplayAlert(Swal, "Sudoku successfully saved!");
 			}

@@ -1,10 +1,10 @@
-﻿@page "/Collection"
+﻿@page "/SudokuCollection"
 @using Sudoku.Classes;
 @using Sudoku.Models;
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<DbService>
 @using Microsoft.AspNetCore.Components.Forms
-
+<PageTitle>Your Sudokus</PageTitle>
 <h3>Collection</h3>
 <div>
 	<table class="table">	
@@ -31,7 +31,7 @@
 					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
 					<button class="btn btn-primary" >Solve</button>
 					<div>
-						<NavLink href="@url" target="_blank">Detail</NavLink>
+						<NavLink href="@url">Detail</NavLink>
 					</div>				
 				</td>
 			</tr>

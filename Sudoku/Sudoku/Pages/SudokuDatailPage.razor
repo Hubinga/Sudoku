@@ -1,6 +1,7 @@
 ﻿@page "/Collection/{Id:int}"
 @inject NavigationManager NavigationManager
 @using Sudoku.Classes;
+@using Sudoku.Components
 @using Sudoku.Models;
 @inherits OwningComponentBase<DbService>
 
@@ -22,7 +23,7 @@
 	}
 }
 <div>
-  <NavLink href="collection" target="_blank">Back</NavLink>
+  <NavLink href="collection">Back</NavLink>
 </div>
 
 @code {
