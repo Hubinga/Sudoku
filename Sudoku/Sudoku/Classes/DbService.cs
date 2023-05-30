@@ -21,11 +21,12 @@ namespace Sudoku.Classes
 			return await _context.SudokuModel.Where(s => s.Id == id).FirstOrDefaultAsync();
 		}
 
-		public Task<SudokuModel> AddSudokuModelAsync(SudokuModel sudokuModel)
+		public Task<int> AddSudokuModelAsync(SudokuModel sudokuModel)
         {
-            _context.SudokuModel.Add(sudokuModel);
+            var addedEntry = _context.SudokuModel.Add(sudokuModel);
             _context.SaveChanges();
-            return Task.FromResult(sudokuModel);
+            //return Id (primary key)
+            return Task.FromResult(addedEntry.Entity.Id);
         }
 
         public Task<bool> UpdateSudokuModelAsync(SudokuModel sudokuModel)
@@ -38,6 +39,8 @@ namespace Sudoku.Classes
                 existingSudokuModel.Difficulty = sudokuModel.Difficulty;
                 existingSudokuModel.Time = sudokuModel.Time;
                 existingSudokuModel.Solved = sudokuModel.Solved;
+                existingSudokuModel.SolvedBoard = sudokuModel.SolvedBoard;
+                existingSudokuModel.CurrentBoard = sudokuModel.CurrentBoard;
 
                 _context.SaveChanges();
             }

@@ -176,6 +176,8 @@
 				{
 					StopSudokuProzess();
 					await AlertBox.DisplayAlert(Swal, "Correct Solution!\n Your time: " + (int)timeInSeconds + " seconds");
+					//save
+					await Save();
 					InvokeAsync(StateHasChanged);
 				}
 				else
@@ -194,6 +196,8 @@
 					{
 						SolveSudoku();
 						StopSudokuProzess();
+						//save
+						await Save();
 						InvokeAsync(StateHasChanged);
 					}
 				}
@@ -259,7 +263,7 @@
 		if (sudoku != null)
 		{
 			SudokuModel sudokuModel = new SudokuModel();
-			sudokuModel.Time = (int)timeSpan.TotalSeconds;
+			sudokuModel.Time = timeInSeconds > 0 ? (int)timeInSeconds : (int)timeSpan.TotalSeconds;
 			sudokuModel.CurrentBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.Board);
 			sudokuModel.OriginalBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.OriginalBoard);
 			sudokuModel.Difficulty = "Medium";
@@ -270,29 +274,57 @@
 				sudokuModel.Solved = true;
 			}
 
-			Task? result = null;
-
 			//not yet saved: new entry
 			if(currentSudokuModelId == -1)
 			{
-				result = @Service.AddSudokuModelAsync(sudokuModel);
+				await SaveNewEntry(sudokuModel);
 			}
 			//already saved: update entry
 			else
 			{
-				result = @Service.UpdateSudokuModelAsync(sudokuModel);
-			}
-
-			if (result != null)
-			{
-				await AlertBox.DisplayAlert(Swal, "Sudoku successfully saved!");
-			}
-			else
-			{
-				await AlertBox.DisplayError(Swal, "Error while saving sudoku!");
+				//set Id of sudoku model to update
+				sudokuModel.Id = currentSudokuModelId;
+				await SaveExistingEntry(sudokuModel);
 			}
 		}
 	}
+
+	private async Task SaveNewEntry(SudokuModel sudokuModel)
+	{
+		var result = @Service.AddSudokuModelAsync(sudokuModel);
+
+		if (result != null)
+		{
+			await AlertBox.DisplayAlert(Swal, "Sudoku successfully saved!");
+			currentSudokuModelId = result.Result;
+		}
+		else
+		{
+			await AlertBox.DisplayError(Swal, "Error while saving sudoku!");
+		}
+	}
+
+	private async Task SaveExistingEntry(SudokuModel sudokuModel)
+	{
+		var result = @Service.UpdateSudokuModelAsync(sudokuModel);
+
+		if(result != null)
+		{
+			if (result.Result)
+			{
+				await AlertBox.DisplayAlert(Swal, "Sudoku successfully updated!");
+			}
+			else
+			{
+				await AlertBox.DisplayError(Swal, "Error while updating sudoku!");
+			}
+		}
+		else
+		{
+			await AlertBox.DisplayError(Swal, "Error while updating sudoku!");
+		}
+	}
+
 	#endregion
 
 	#region StopWatch Component
@@ -308,6 +340,7 @@
 		{
 			startTime = DateTime.Now - timeSpan;
 			timer = new Timer(UpdateTime, null, 0, 1000);
+			timeInSeconds = 0;
 			isRunning = true;
 		}
 	}
