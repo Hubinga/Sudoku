@@ -21,7 +21,6 @@
 
 		private void SolveSudoku(Sudoku sudoku, int rowIdx = 0, int colIdx = 0)
 		{
-
 			if (sudoku.IsSolved())
 			{
 				sudoku.Print();

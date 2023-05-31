@@ -4,6 +4,7 @@
 @using Sudoku.Components
 @using Sudoku.Models;
 @inherits OwningComponentBase<DbService>
+<PageTitle>Detail</PageTitle>
 
 @{
 	if(sudoku != null)
@@ -27,7 +28,7 @@
 </div>
 
 @code {
-	private SudokuModel currentSudokuModel = new SudokuModel();
+	private SudokuModel? currentSudokuModel = new SudokuModel();
 	private Sudoku? sudoku = null;
 	[Parameter]
 	public int Id { get; set; }

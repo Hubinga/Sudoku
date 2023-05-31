@@ -16,6 +16,7 @@
 			Solved = false;
 		}
 
+		//for creating Sudoku with database entry (sudokumodel) 
 		public Sudoku(int[,] originalBoard, int[,] solvedBoard, bool solved)
 		{
 			OriginalBoard = originalBoard;

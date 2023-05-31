@@ -24,8 +24,6 @@ namespace Sudoku.Classes
 				ConfirmButtonText = confirmButtonText,
 				CancelButtonText = cancelButtonText
 			});
-
-
 		}
 	}
 }
