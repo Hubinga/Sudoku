@@ -3,29 +3,34 @@
 @inject SweetAlertService Swal;
 @inherits OwningComponentBase<DbService>
 <div class="sudoku-inputs">
-	<div hidden = "@(sudoku!=null && !sudoku.Solved)">
-		<h1>Upload a sudoku to start!</h1>
-		<label>
-			Upload a sudoku:
-			<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
-		</label>
-	</div>
-	<br/>
-	<button class="button-purple" hidden ="@(sudoku==null)" disabled="@(!inactive)" @onclick="Start">Start</button>
+	@{
+		if (HasUploadFileField)
+		{
+			<div hidden = "@(Sudoku!=null && !Sudoku.Solved)">
+				<h1>Upload a sudoku to start!</h1>
+				<label>
+					Upload a sudoku:
+					<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
+				</label>
+			</div>
+			<br/>
+		}
+	}
+	<button class="button-purple" hidden ="@(Sudoku==null)" disabled="@(!inactive)" @onclick="Start">Start</button>
 	<button class="button-purple" hidden="@inactive" @onclick="ResetSudoku">Reset</button>
-	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetHint">Hint</button>
-	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="GetResult">End</button>
-	<button class="button-purple" hidden="@inactive" disabled="@(!sudoku?.SolvingProzessFinished)" @onclick="Save">Save</button>
+	<button class="button-purple" hidden="@inactive" disabled="@(!Sudoku?.SolvingProzessFinished)" @onclick="GetHint">Hint</button>
+	<button class="button-purple" hidden="@inactive" disabled="@(!Sudoku?.SolvingProzessFinished)" @onclick="GetResult">End</button>
+	<button class="button-purple" hidden="@inactive" disabled="@(!Sudoku?.SolvingProzessFinished)" @onclick="Save">Save</button>
 	<br/>
 </div>
 <div hidden ="@(!isRunning)" class="timer-container">Time: @timeSpan.ToString(@"hh\:mm\:ss")</div>
 <section class="board">
 	@{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
-			for (int i = 0; i < sudoku.Board.GetLength(0); i++)
+			for (int i = 0; i < Sudoku.Board.GetLength(0); i++)
 			{
-				for (int j = 0; j < sudoku.Board.GetLength(1); j++)
+				for (int j = 0; j < Sudoku.Board.GetLength(1); j++)
 				{
 					int currentRowIdx = i;
 					int currentColIdx = j;
@@ -40,7 +45,7 @@
 						cssClassTag += " tile-firstCol";
 					}
 
-					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class=@cssClassTag @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@sudoku.Board[i, j]</div>
+					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class=@cssClassTag @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@Sudoku.Board[i, j]</div>
 				}
 			}
 		}
@@ -62,22 +67,23 @@
 
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private SudokuSolver sudokuSolver = new SudokuSolver();
-	private Sudoku? sudoku = null;
 
 	private Field activeField = new Field(-1, -1);
-
 	private bool inactive = true;
 
-	#region Helper Methods
-
-	#endregion
+	[Parameter]
+	public Sudoku? Sudoku { get; set; } = null;
+	[Parameter]
+	public bool HasUploadFileField { get; set; } = true;
+	[Parameter]
+	public int CurrentSudokuModelId { get; set; } = -1;
 
 	#region Board Methods
 
 	//change number of selected field
 	private void KeyboardEventHandler(KeyboardEventArgs args)
 	{
-		if (sudoku != null && activeField.RowIdx != -1 && activeField.ColIdx != -1)
+		if (Sudoku != null && activeField.RowIdx != -1 && activeField.ColIdx != -1)
 		{
 			string key = args.Key;
 
@@ -87,7 +93,7 @@
 			int inputNumber;
 			if (int.TryParse(key, out inputNumber))
 			{
-				sudoku.ChangeNumberOfField(activeField.RowIdx, activeField.ColIdx, Convert.ToInt32(args.Key));
+				Sudoku.ChangeNumberOfField(activeField.RowIdx, activeField.ColIdx, Convert.ToInt32(args.Key));
 			}
 		}
 	}
@@ -95,11 +101,11 @@
 	//set selected field
 	private void FieldClicked(int rowIdx, int colIdx)
 	{
-		if (sudoku != null && !inactive)
+		if (Sudoku != null && !inactive)
 		{
 			//Console.WriteLine("rowIdx: {0}, colIdx: {1}", rowIdx, colIdx);
 			//avoid changing field if its initially filled
-			if (sudoku.IsInitialFieldStateFilled(rowIdx, colIdx))
+			if (Sudoku.IsInitialFieldStateFilled(rowIdx, colIdx))
 			{
 				//Console.WriteLine("Can't change field value if its initialy filled");
 				activeField.RowIdx = -1;
@@ -130,7 +136,7 @@
 
 		try
 		{
-			sudoku = sudokuCreator.LoadFromFile(fileContent);
+			Sudoku = sudokuCreator.LoadFromFile(fileContent);
 			//await AlertBox.DisplayAlert(Swal, "Press start and try to solve it!");
 		}
 		catch (Exception ex)
@@ -142,19 +148,19 @@
 
 	private void ResetSudoku()
 	{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
-			sudoku.Reset();
+			Sudoku.Reset();
 		}
 	}
 
 	private async void SolveSudoku()
 	{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
 			try
 			{
-				sudoku.TryUncoverSolution();
+				Sudoku.TryUncoverSolution();
 			}
 			catch (Exception e)
 			{
@@ -166,17 +172,17 @@
 
 	private async void GetResult()
 	{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
 			try
 			{
-				if (sudoku.IsCorrectSoulution())
+				if (Sudoku.IsCorrectSoulution())
 				{
 					StopSudokuProzess();
 					await AlertBox.DisplayAlert(Swal, "Correct Solution!\n Your time: " + (int)timeInSeconds + " seconds");
 					//save
 					await Save();
-					sudoku = null;
+					Sudoku = null;
 					InvokeAsync(StateHasChanged);
 				}
 				else
@@ -212,16 +218,16 @@
 	{
 		ResetStopwatch();
 		inactive = true;
-		sudoku.Solved = true;
+		Sudoku.Solved = true;
 	}
 
 	private async void GetHint()
 	{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
 			try
 			{
-				sudoku.TryUncoverRandomField();
+				Sudoku.TryUncoverRandomField();
 			}
 			catch (Exception e)
 			{
@@ -232,13 +238,13 @@
 
 	private async void Start()
 	{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
-			if (sudokuSolver.IsSudokuPossible(sudoku))
+			if (sudokuSolver.IsSudokuPossible(Sudoku))
 			{
 				var action = new Action(() =>
 				{
-					sudokuSolver.GenerateSolution(sudoku);
+					sudokuSolver.GenerateSolution(Sudoku);
 				});
 
 				Task generateSolutionTask = new Task(action);
@@ -255,26 +261,24 @@
 		}
 	}
 
-	int currentSudokuModelId = -1;
-
 	private async Task Save()
 	{
-		if (sudoku != null)
+		if (Sudoku != null)
 		{
 			SudokuModel sudokuModel = new SudokuModel();
 			sudokuModel.Time = timeInSeconds > 0 ? (int)timeInSeconds : (int)timeSpan.TotalSeconds;
-			sudokuModel.CurrentBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.Board);
-			sudokuModel.OriginalBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.OriginalBoard);
+			sudokuModel.CurrentBoard = sudokuCreator.ConvertIntArrayToBoardString(Sudoku.Board);
+			sudokuModel.OriginalBoard = sudokuCreator.ConvertIntArrayToBoardString(Sudoku.OriginalBoard);
 			sudokuModel.Difficulty = "Medium";
 
-			if (sudoku.Solved)
+			if (Sudoku.Solved)
 			{
-				sudokuModel.SolvedBoard = sudokuCreator.ConvertIntArrayToBoardString(sudoku.SolvedBoard);
+				sudokuModel.SolvedBoard = sudokuCreator.ConvertIntArrayToBoardString(Sudoku.SolvedBoard);
 				sudokuModel.Solved = true;
 			}
 
 			//not yet saved: new entry
-			if(currentSudokuModelId == -1)
+			if(CurrentSudokuModelId == -1)
 			{
 				await SaveNewEntry(sudokuModel);
 			}
@@ -282,7 +286,7 @@
 			else
 			{
 				//set Id of sudoku model to update
-				sudokuModel.Id = currentSudokuModelId;
+				sudokuModel.Id = CurrentSudokuModelId;
 				await SaveExistingEntry(sudokuModel);
 			}
 		}
@@ -295,7 +299,7 @@
 		if (result != null)
 		{
 			await AlertBox.DisplayAlert(Swal, "Sudoku successfully saved!");
-			currentSudokuModelId = result.Result;
+			CurrentSudokuModelId = result.Result;
 		}
 		else
 		{

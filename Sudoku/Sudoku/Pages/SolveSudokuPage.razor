@@ -5,7 +5,7 @@
 @inherits OwningComponentBase<DbService>
 <PageTitle>Solve Sudoku</PageTitle>
 <h3>Solve Sudoku</h3>
-<PlaySudokuComponent></PlaySudokuComponent>
+<PlaySudokuComponent HasUploadFileField="false" Sudoku="@sudoku" CurrentSudokuModelId="@Id"></PlaySudokuComponent>
 <div>
   <NavLink href="SudokuCollection">Back</NavLink>
 </div>
