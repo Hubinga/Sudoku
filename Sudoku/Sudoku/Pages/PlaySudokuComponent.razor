@@ -36,6 +36,11 @@
 					int currentColIdx = j;
 					string cssClassTag = "tile";
 
+					if(Sudoku.IsInitialFieldStateFilled(i, j))
+					{
+						cssClassTag += " fieldInitialFilled";
+					}
+
 					if (i == 0)
 					{
 						cssClassTag += " tile-firstRow";

@@ -23,6 +23,8 @@
 			string detailUrl = "collection/" + item.Id;
 			string solveSudokuUrl = "SolveSudoku/" + item.Id;
 
+			string solveSudokuUrlText = item.Solved ? "Solve Aigain" : "Solve";
+
 			<tr>
 				<td class = "table-data">@item.OriginalBoard</td>
 				<td class = "table-data">@item.SolvedBoard</td>
@@ -32,7 +34,7 @@
 					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
 					<button class="btn btn-primary" >Solve</button>
 					<div>
-						<NavLink href="@solveSudokuUrl">Solve</NavLink>
+						<NavLink href="@solveSudokuUrl">@solveSudokuUrlText</NavLink>
 					</div>	
 					<div>
 						<NavLink href="@detailUrl">Detail</NavLink>
@@ -72,18 +74,6 @@
 							<label>
 								Original Board:
 								<InputText id="OriginalBoard" @bind-Value="currentSudokuModel.OriginalBoard"/>
-							</label>
-						</p>
-						<p>
-							<label>
-								 Solved Board (optional):
-								<InputText id="SolvedBoard" @bind-Value="currentSudokuModel.SolvedBoard"/>
-							</label>
-						</p>
-						<p>
-							<label>
-								Time in seconds (optional):
-								<InputNumber id="Time" @bind-Value="currentSudokuModel.Time"/>
 							</label>
 						</p>
 						<p>
@@ -174,8 +164,7 @@
 			SudokuModel newSudokuModel = new SudokuModel();
 			newSudokuModel.OriginalBoard = currentSudokuModel.OriginalBoard;
 			newSudokuModel.Difficulty = currentSudokuModel.Difficulty;
-			newSudokuModel.Time = currentSudokuModel.Time;
-			newSudokuModel.SolvedBoard = currentSudokuModel.SolvedBoard;
+			newSudokuModel.Time = 0;
 			// Save the result
 			var result = @Service.AddSudokuModelAsync(newSudokuModel);
 		}
