@@ -20,7 +20,8 @@
 		<tbody>
 		@foreach (var item in sudokuModels)
 		{
-			string url = "collection/" + item.Id;
+			string detailUrl = "collection/" + item.Id;
+			string solveSudokuUrl = "SolveSudoku/" + item.Id;
 
 			<tr>
 				<td class = "table-data">@item.OriginalBoard</td>
@@ -31,7 +32,10 @@
 					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
 					<button class="btn btn-primary" >Solve</button>
 					<div>
-						<NavLink href="@url">Detail</NavLink>
+						<NavLink href="@solveSudokuUrl">Solve</NavLink>
+					</div>	
+					<div>
+						<NavLink href="@detailUrl">Detail</NavLink>
 					</div>				
 				</td>
 			</tr>

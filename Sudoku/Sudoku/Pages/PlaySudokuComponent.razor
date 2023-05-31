@@ -1,12 +1,10 @@
-﻿@page "/PlaySudoku"
-@using Sudoku.Classes;
+﻿@using Sudoku.Classes;
 @using Sudoku.Models;
 @inject SweetAlertService Swal;
 @inherits OwningComponentBase<DbService>
-<PageTitle>Play Sudoku</PageTitle>
-<h1>Upload a sudoku to start!</h1>
 <div class="sudoku-inputs">
 	<div hidden = "@(sudoku!=null && !sudoku.Solved)">
+		<h1>Upload a sudoku to start!</h1>
 		<label>
 			Upload a sudoku:
 			<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
@@ -178,6 +176,7 @@
 					await AlertBox.DisplayAlert(Swal, "Correct Solution!\n Your time: " + (int)timeInSeconds + " seconds");
 					//save
 					await Save();
+					sudoku = null;
 					InvokeAsync(StateHasChanged);
 				}
 				else

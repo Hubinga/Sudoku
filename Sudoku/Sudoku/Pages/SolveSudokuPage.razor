@@ -1,0 +1,41 @@
+﻿@page "/SolveSudoku/{Id:int}"
+@using Sudoku.Classes;
+@using Sudoku.Models;
+@inject NavigationManager NavigationManager
+@inherits OwningComponentBase<DbService>
+<PageTitle>Solve Sudoku</PageTitle>
+<h3>Solve Sudoku</h3>
+<PlaySudokuComponent></PlaySudokuComponent>
+<div>
+  <NavLink href="SudokuCollection">Back</NavLink>
+</div>
+
+@code {
+	private SudokuModel currentSudokuModel = new SudokuModel();
+	private Sudoku? sudoku = null;
+	[Parameter]
+	public int Id { get; set; }
+	private SudokuCreator sudokuCreator = new SudokuCreator();
+
+	protected override async Task OnInitializedAsync()
+	{
+		currentSudokuModel = await @Service.GetSudokuModelAsync(Id);
+
+		if (currentSudokuModel != null)
+		{
+			int[,] originalBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.OriginalBoard.Split(","));
+
+			//sudoku solved
+			if (currentSudokuModel.SolvedBoard != null)
+			{
+				int[,] solvedBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.SolvedBoard.Split(","));
+				sudoku = new Sudoku(originalBoard, solvedBoard, currentSudokuModel.Solved);
+			}
+			else
+			{
+				//sudoku not yet solved
+				sudoku = new Sudoku(originalBoard, originalBoard, currentSudokuModel.Solved);
+			}
+		}
+	}
+}
