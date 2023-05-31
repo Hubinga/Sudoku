@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Sudoku.Models;
 
 namespace Sudoku.Data
@@ -14,6 +10,6 @@ namespace Sudoku.Data
         {
         }
 
-        public DbSet<Sudoku.Models.SudokuModel> SudokuModel { get; set; } = default!;
+        public DbSet<SudokuModel> SudokuModel { get; set; } = default!;
     }
 }

@@ -130,7 +130,11 @@
 	//upload sudoku
 	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
 	{
-		//check for file type
+		//text file
+		if (e.File.ContentType != "text/plain")
+		{
+			return;
+		}
 
 		var file = e.File;
 		long maxsize = 512000;

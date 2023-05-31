@@ -16,7 +16,7 @@
 
 			if (numbers.Length != rowSize * colSize)
 			{
-				throw new Exception($"Size has to be {rowSize * colSize}");
+				throw new Exception($"Wrong Format, Size has to be {rowSize * colSize}");
 			}
 
 			int[,] board = ConvertBoardStringToIntArray(numbers);

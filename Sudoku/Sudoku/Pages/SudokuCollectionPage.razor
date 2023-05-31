@@ -113,6 +113,12 @@
 		//check for file type
 		if (currentSudokuModel != null)
 		{
+			//text file
+			if (e.File.ContentType != "text/plain")
+			{
+				return;
+			}
+
 			var file = e.File;
 			long maxsize = 512000;
 
