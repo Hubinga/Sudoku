@@ -22,6 +22,8 @@ namespace Sudoku.Models
 
 		[Required]
 		public string? Difficulty { get; set; }
+
+		public string? Help { get; set; }
 		public bool Solved { get; set; }
 		public int Time { get; set; }
 	}

@@ -1,5 +1,6 @@
 ﻿@page "/SolveSudoku/{Id:int}"
 @using Sudoku.Classes;
+@using Sudoku.Classes.Enums;
 @using Sudoku.Models;
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<DbService>
@@ -11,11 +12,14 @@
 </div>
 
 @code {
-	private SudokuModel currentSudokuModel = new SudokuModel();
+	private SudokuModel? currentSudokuModel = new SudokuModel();
 	private Sudoku? sudoku = null;
 	[Parameter]
 	public int Id { get; set; }
 	private SudokuCreator sudokuCreator = new SudokuCreator();
+	private int currentTime = 0;
+	private Difficulty currentDifficulty = Difficulty.Medium;
+	private HelpTypes currentHelp = HelpTypes.Nothing;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -36,6 +40,11 @@
 				//sudoku not yet solved
 				sudoku = new Sudoku(originalBoard, originalBoard, currentSudokuModel.Solved);
 			}
+
+			//if already solved timer should start at 0 (user wants to try again)
+			currentTime = currentSudokuModel.Solved ? 0 : currentSudokuModel.Time;
+			currentDifficulty = (Difficulty)Enum.Parse(typeof(Difficulty), currentSudokuModel.Difficulty);
+			currentHelp = (HelpTypes)Enum.Parse(typeof(HelpTypes), currentSudokuModel.Help);
 		}
 	}
 }

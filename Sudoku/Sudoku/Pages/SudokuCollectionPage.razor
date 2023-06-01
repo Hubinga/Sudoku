@@ -1,5 +1,6 @@
 ﻿@page "/SudokuCollection"
 @using Sudoku.Classes;
+@using Sudoku.Classes.Enums;
 @using Sudoku.Models;
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<DbService>
@@ -13,6 +14,7 @@
 				<th>Original Board</th>
 				<th>Solved Board</th>
 				<th>Difficulty</th>
+				<th>Help</th>
 				<th>Time</th>
 				<th></th>
 			</tr>
@@ -29,6 +31,7 @@
 				<td class = "table-data">@item.OriginalBoard</td>
 				<td class = "table-data">@item.SolvedBoard</td>
 				<td>@item.Difficulty</td>
+				<td>@item.Help</td>
 				<td>@item.Time</td>
 				<td>
 					<button class="btn btn-primary" @onclick="(() => EditSudoku(item))">Edit</button>
@@ -169,7 +172,9 @@
 			SudokuModel newSudokuModel = new SudokuModel();
 			newSudokuModel.OriginalBoard = currentSudokuModel.OriginalBoard;
 			newSudokuModel.Difficulty = currentSudokuModel.Difficulty;
+			//set time and help to default value
 			newSudokuModel.Time = 0;
+			newSudokuModel.Help = Enum.GetName(typeof(HelpTypes), HelpTypes.Nothing);
 			// Save the result
 			var result = @Service.AddSudokuModelAsync(newSudokuModel);
 		}

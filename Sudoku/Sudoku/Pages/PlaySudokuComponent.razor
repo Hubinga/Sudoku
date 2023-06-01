@@ -1,4 +1,5 @@
 ﻿@using Sudoku.Classes;
+@using Sudoku.Classes.Enums;
 @using Sudoku.Models;
 @inject SweetAlertService Swal;
 @inherits OwningComponentBase<DbService>
@@ -82,6 +83,12 @@
 	public bool HasUploadFileField { get; set; } = true;
 	[Parameter]
 	public int CurrentSudokuModelId { get; set; } = -1;
+	[Parameter]
+	public int CurrentTime { get; set; } = 0;
+	[Parameter]
+	public Difficulty CurrentDifficulty { get; set; } = Difficulty.Medium;
+	[Parameter]
+	public HelpTypes CurrentHelp { get; set; } = HelpTypes.Nothing;
 
 	#region Board Methods
 
@@ -146,7 +153,6 @@
 		try
 		{
 			Sudoku = sudokuCreator.LoadFromFile(fileContent);
-			//await AlertBox.DisplayAlert(Swal, "Press start and try to solve it!");
 		}
 		catch (Exception ex)
 		{
@@ -170,6 +176,7 @@
 			try
 			{
 				Sudoku.TryUncoverSolution();
+				CurrentHelp = HelpTypes.Solution;
 			}
 			catch (Exception e)
 			{
@@ -237,6 +244,7 @@
 			try
 			{
 				Sudoku.TryUncoverRandomField();
+				CurrentHelp = HelpTypes.Hints;
 			}
 			catch (Exception e)
 			{
@@ -278,7 +286,8 @@
 			sudokuModel.Time = timeInSeconds > 0 ? (int)timeInSeconds : (int)timeSpan.TotalSeconds;
 			sudokuModel.CurrentBoard = sudokuCreator.ConvertIntArrayToBoardString(Sudoku.Board);
 			sudokuModel.OriginalBoard = sudokuCreator.ConvertIntArrayToBoardString(Sudoku.OriginalBoard);
-			sudokuModel.Difficulty = "Medium";
+			sudokuModel.Difficulty = Enum.GetName(typeof(Difficulty), CurrentDifficulty);
+			sudokuModel.Help = Enum.GetName(typeof(HelpTypes), CurrentHelp);
 
 			if (Sudoku.Solved)
 			{

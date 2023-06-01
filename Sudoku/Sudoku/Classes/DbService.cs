@@ -41,6 +41,7 @@ namespace Sudoku.Classes
                 existingSudokuModel.Solved = sudokuModel.Solved;
                 existingSudokuModel.SolvedBoard = sudokuModel.SolvedBoard;
                 existingSudokuModel.CurrentBoard = sudokuModel.CurrentBoard;
+                existingSudokuModel.Help = sudokuModel.Help;
 
                 _context.SaveChanges();
             }
