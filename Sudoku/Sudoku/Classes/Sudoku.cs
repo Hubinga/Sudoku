@@ -173,14 +173,14 @@
 
 		public bool NumberAtBlockPossible(int rowIdx, int colIdx, int number)
 		{
-			int rowIdxStart = rowIdx / 3 * 3;
-			int colIdxStart = colIdx / 3 * 3;
+			int rowIdxStart = (rowIdx / 3) * 3;
+			int colIdxStart = (colIdx / 3) * 3;
 
-			for (int i = rowIdxStart; i < rowIdxStart + 2; i++)
+			for (int i = rowIdxStart; i <= rowIdxStart + 2; i++)
 			{
-				for (int j = colIdxStart; j < colIdxStart + 2; j++)
+				for (int j = colIdxStart; j <= colIdxStart + 2; j++)
 				{
-					if (SolvedBoard[i, j] == number && (i != rowIdx && j != colIdx))
+					if (SolvedBoard[i, j] == number)
 					{
 						return false;
 					}
@@ -194,7 +194,8 @@
 
 		public void Print()
 		{
-			string solvedBoardAsString = "";
+            Console.WriteLine("Solved Board:");
+            string solvedBoardAsString = "";
 
 			for (int i = 0; i < SolvedBoard.GetLength(0); i++)
 			{
