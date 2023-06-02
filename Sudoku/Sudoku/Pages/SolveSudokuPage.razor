@@ -28,17 +28,18 @@
 		if (currentSudokuModel != null)
 		{
 			int[,] originalBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.OriginalBoard.Split(","));
+			int[,] currentBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.CurrentBoard.Split(","));
 
 			//sudoku solved
 			if (currentSudokuModel.SolvedBoard != null)
 			{
 				int[,] solvedBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.SolvedBoard.Split(","));
-				sudoku = new Sudoku(originalBoard, solvedBoard, currentSudokuModel.Solved);
+				sudoku = new Sudoku(originalBoard, currentBoard, solvedBoard, currentSudokuModel.Solved);
 			}
 			else
 			{
 				//sudoku not yet solved
-				sudoku = new Sudoku(originalBoard, originalBoard, currentSudokuModel.Solved);
+				sudoku = new Sudoku(originalBoard, currentBoard, originalBoard, currentSudokuModel.Solved);
 			}
 
 			//if already solved timer should start at 0 (user wants to try again)

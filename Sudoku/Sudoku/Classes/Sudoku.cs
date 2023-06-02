@@ -17,12 +17,11 @@
 		}
 
 		//for creating Sudoku with database entry (sudokumodel) 
-		public Sudoku(int[,] originalBoard, int[,] solvedBoard, bool solved)
+		public Sudoku(int[,] originalBoard, int[,] currentBoard, int[,] solvedBoard, bool solved)
 		{
 			OriginalBoard = originalBoard;
 
-			Board = new int[originalBoard.GetLength(0), originalBoard.GetLength(1)];
-			Array.Copy(originalBoard, Board, originalBoard.Length);
+			Board = currentBoard;
 
 			if (solved)
 			{
