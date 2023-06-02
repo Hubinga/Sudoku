@@ -166,6 +166,10 @@
 		if (Sudoku != null)
 		{
 			Sudoku.Reset();
+			//reset time to 0 (user resets the board and so the time should also start at 0)
+			CurrentTime = 0;
+			ResetStopwatch();
+			StartStopwatch();
 		}
 	}
 
