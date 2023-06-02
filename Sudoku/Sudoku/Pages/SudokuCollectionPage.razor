@@ -13,6 +13,7 @@
 			<tr>
 				<th>Original Board</th>
 				<th>Solved Board</th>
+				<th>Current Board</th>
 				<th>Difficulty</th>
 				<th>Help</th>
 				<th>Time</th>
@@ -30,6 +31,7 @@
 			<tr>
 				<td class = "table-data">@item.OriginalBoard</td>
 				<td class = "table-data">@item.SolvedBoard</td>
+				<td class = "table-data">@item.CurrentBoard</td>
 				<td>@item.Difficulty</td>
 				<td>@item.Help</td>
 				<td>@item.Time</td>
@@ -105,6 +107,9 @@
 
 	List<SudokuModel> sudokuModels = new List<SudokuModel>();
 
+	SudokuModel currentSudokuModel = new SudokuModel();
+	bool ShowPopup = false;
+
 	protected override async Task OnInitializedAsync()
 	{
 		sudokuModels = await @Service.GetSudokuModelsAsync();
@@ -130,9 +135,6 @@
 			currentSudokuModel.OriginalBoard = fileContent;
 		}
 	}
-
-	SudokuModel currentSudokuModel = new SudokuModel();
-	bool ShowPopup = false;
 
 	void ClosePopup()
 	{
@@ -170,6 +172,7 @@
 		{
 			SudokuModel newSudokuModel = new SudokuModel();
 			newSudokuModel.OriginalBoard = currentSudokuModel.OriginalBoard;
+			newSudokuModel.CurrentBoard = currentSudokuModel.OriginalBoard;
 			newSudokuModel.Difficulty = currentSudokuModel.Difficulty;
 			//set time and help to default value
 			newSudokuModel.Time = 0;
