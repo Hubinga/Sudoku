@@ -359,6 +359,11 @@
 	{
 		if (!isRunning)
 		{
+			if(timeSpan == TimeSpan.Zero)
+			{
+				timeSpan = TimeSpan.FromSeconds(CurrentTime);
+			}
+
 			startTime = DateTime.Now - timeSpan;
 			timer = new Timer(UpdateTime, null, 0, 1000);
 			timeInSeconds = 0;
