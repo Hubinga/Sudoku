@@ -28,16 +28,21 @@
 		if (currentSudokuModel != null)
 		{
 			int[,] originalBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.OriginalBoard.Split(","));
-			int[,] currentBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.CurrentBoard.Split(","));
+			int[,] currentBoard;
 
 			//sudoku solved
 			if (currentSudokuModel.SolvedBoard != null)
 			{
 				int[,] solvedBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.SolvedBoard.Split(","));
-				sudoku = new Sudoku(originalBoard, currentBoard, solvedBoard, currentSudokuModel.Solved);
+
+				currentBoard = new int[originalBoard.GetLength(0), originalBoard.GetLength(1)];
+				Array.Copy(originalBoard, currentBoard, originalBoard.Length);
+
+				sudoku = new Sudoku(originalBoard, currentBoard, solvedBoard, false);
 			}
 			else
 			{
+				currentBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.CurrentBoard.Split(","));
 				//sudoku not yet solved
 				sudoku = new Sudoku(originalBoard, currentBoard, originalBoard, currentSudokuModel.Solved);
 			}
@@ -45,7 +50,8 @@
 			//if already solved timer should start at 0 (user wants to try again)
 			currentTime = currentSudokuModel.Solved ? 0 : currentSudokuModel.Time;
 			currentDifficulty = (Difficulty)Enum.Parse(typeof(Difficulty), currentSudokuModel.Difficulty);
-			currentHelp = (HelpTypes)Enum.Parse(typeof(HelpTypes), currentSudokuModel.Help);
+			//if already solved reset Help to "No Help" (user wants to try again)
+			currentHelp = currentSudokuModel.Solved ? HelpTypes.Nothing : (HelpTypes)Enum.Parse(typeof(HelpTypes), currentSudokuModel.Help);
 		}
 	}
 }
