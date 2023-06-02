@@ -282,6 +282,13 @@
 	{
 		if (Sudoku != null)
 		{
+			//sudoku should not be saved, if it is not possible
+			if (!sudokuSolver.IsSudokuPossible(Sudoku))
+			{
+				await AlertBox.DisplayError(Swal, "Sudoku cant be saved, if it contains errors (fix them or reset the sudoku before saving it!)");
+				return;
+			}
+
 			SudokuModel sudokuModel = new SudokuModel();
 			sudokuModel.Time = timeInSeconds > 0 ? (int)timeInSeconds : (int)timeSpan.TotalSeconds;
 			sudokuModel.CurrentBoard = sudokuCreator.ConvertIntArrayToBoardString(Sudoku.Board);
