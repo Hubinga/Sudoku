@@ -252,6 +252,10 @@
 				Sudoku.TryUncoverRandomField();
 				CurrentHelp = HelpTypes.Hints;
 			}
+			catch (TryUncoverRandomFieldException e)
+			{
+				await AlertBox.DisplayAlert(Swal, e.Message);
+			}
 			catch (Exception e)
 			{
 				await AlertBox.DisplayError(Swal, e.Message);

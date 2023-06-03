@@ -296,7 +296,7 @@
 
 			if (emptyFields.Count == 0)
 			{
-				return;
+				throw new TryUncoverRandomFieldException("Board is already filled: You can press \"End\" now!");
 			}
 
 			Random random = new Random();
