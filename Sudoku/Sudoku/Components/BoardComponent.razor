@@ -6,6 +6,14 @@
 			{
 				string cssClassTag = "tile";
 
+				if((i + 1) % 3 == 0)
+				{
+					cssClassTag += " tile-blockRow";
+				}
+				if ((j + 1) % 3 == 0)
+				{
+					cssClassTag += " tile-blockCol";
+				}
 				if (i == 0)
 				{
 					cssClassTag += " tile-firstRow";
@@ -15,7 +23,9 @@
 					cssClassTag += " tile-firstCol";
 				}
 
-				<div class=@cssClassTag>@Board[i, j]</div>
+				string field = Board[i, j] == 0 ? " " : Board[i, j].ToString();
+
+				<div class=@cssClassTag>@field</div>
 			}
 		}
 	}

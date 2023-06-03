@@ -14,16 +14,24 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
+    font-size: 30px;
     cursor: pointer;
 }
 
 .tile-firstRow {
-    border-top: 1px solid black;
+    border-top: 2px solid black;
 }
 
 .tile-firstCol {
-    border-left: 1px solid black;
+    border-left: 2px solid black;
+}
+
+.tile-blockRow {
+    border-bottom: 2px solid black;
+}
+
+.tile-blockCol {
+    border-right: 2px solid black;
 }
 
 .tile:focus {
@@ -33,7 +41,7 @@
 }
 
 .fieldInitialFilled {
-    opacity: 0.8;
+    opacity: 0.6;
 }
 
 .button-purple {

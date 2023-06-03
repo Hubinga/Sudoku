@@ -42,6 +42,14 @@
 						cssClassTag += " fieldInitialFilled";
 					}
 
+					if ((i + 1) % 3 == 0)
+					{
+						cssClassTag += " tile-blockRow";
+					}
+					if ((j + 1) % 3 == 0)
+					{
+						cssClassTag += " tile-blockCol";
+					}
 					if (i == 0)
 					{
 						cssClassTag += " tile-firstRow";
@@ -50,8 +58,10 @@
 					{
 						cssClassTag += " tile-firstCol";
 					}
+					int currentField = Sudoku.Board[i, j];
+					string field = currentField == 0 ? " " : currentField.ToString();
 
-					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class=@cssClassTag @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@Sudoku.Board[i, j]</div>
+					<div tabindex="-1" @onkeydown="KeyboardEventHandler" class=@cssClassTag @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@field</div>
 				}
 			}
 		}
@@ -108,6 +118,13 @@
 
 			//Console.WriteLine("Key Pressed is " + key);
 			//Console.WriteLine("Event Type " + args.Type);
+
+			//clear field
+			if (key == "Backspace")
+			{
+				Sudoku.ChangeNumberOfField(activeField.RowIdx, activeField.ColIdx, 0);
+				return;
+			}
 
 			int inputNumber;
 			if (int.TryParse(key, out inputNumber))
