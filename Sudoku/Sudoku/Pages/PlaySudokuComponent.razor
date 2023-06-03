@@ -90,6 +90,13 @@
 	[Parameter]
 	public HelpTypes CurrentHelp { get; set; } = HelpTypes.Nothing;
 
+	private void ResetParameters()
+	{
+		CurrentSudokuModelId = -1;
+		CurrentHelp = HelpTypes.Nothing;
+		CurrentTime = 0;
+	}
+
 	#region Board Methods
 
 	//change number of selected field
@@ -204,6 +211,7 @@
 					await AlertBox.DisplayAlert(Swal, "Correct Solution!\n Your time: " + (int)timeInSeconds + " seconds");
 					//save
 					await Save();
+					ResetParameters();
 					InvokeAsync(StateHasChanged);
 				}
 				else
@@ -224,6 +232,7 @@
 						StopSudokuProzess();
 						//save
 						await Save();
+						ResetParameters();
 						InvokeAsync(StateHasChanged);
 					}
 				}
