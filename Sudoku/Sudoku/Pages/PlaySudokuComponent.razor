@@ -17,7 +17,7 @@
 			<br/>
 		}
 	}
-	<button class="button-purple" hidden ="@(Sudoku==null)" disabled="@(!inactive)" @onclick="Start">Start</button>
+	<button class="button-purple" hidden ="@(Sudoku?.Solved ?? true)" disabled="@(!inactive)" @onclick="Start">Start</button>
 	<button class="button-purple" hidden="@inactive" @onclick="ResetSudoku">Reset</button>
 	<button class="button-purple" hidden="@inactive" disabled="@(!Sudoku?.SolvingProzessFinished)" @onclick="GetHint">Hint</button>
 	<button class="button-purple" hidden="@inactive" disabled="@(!Sudoku?.SolvingProzessFinished)" @onclick="GetResult">End</button>
