@@ -6,7 +6,7 @@
 @inherits OwningComponentBase<DbService>
 @using Microsoft.AspNetCore.Components.Forms
 <PageTitle>Your Sudokus</PageTitle>
-<h3>Collection</h3>
+<h1>Your Sudokus</h1>
 <div>
 	<table class="table">	
 		<thead>
@@ -26,7 +26,7 @@
 			string detailUrl = "collection/" + item.Id;
 			string solveSudokuUrl = "SolveSudoku/" + item.Id;
 
-			string solveSudokuUrlText = item.Solved ? "Solve Aigain" : "Solve";
+			string solveSudokuUrlText = item.Solved ? "Solve Again" : "Solve";
 
 			<tr>
 				<td class = "table-data">@item.OriginalBoard</td>
