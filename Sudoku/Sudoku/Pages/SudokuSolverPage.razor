@@ -1,0 +1,64 @@
+﻿@page "/SudokuSolver"
+@using Sudoku.Classes;
+@using Sudoku.Components
+@inject SweetAlertService Swal;
+<h3>Enter the known numbers and click the Solve button!</h3>
+@{
+	if(board != null)
+	{
+		<BoardComponent Board="board" CanBeEdit="true"></BoardComponent>
+		<button class="button-purple" @onclick="Reset">Reset</button>
+		<button class="button-purple" @onclick="Solve">Solve</button>
+		<button class="button-purple" @onclick="Unsolve">Unsolve</button>
+	}
+}
+
+@code {
+
+	private int[,] board = new int[9,9];
+	private int[,]? boardBeforeSolving = null;
+
+	private SudokuCreator sudokuCreator = new SudokuCreator();
+	private SudokuSolver sudokuSolver = new SudokuSolver();
+
+	private void Reset()
+	{
+		board = new int[board.GetLength(0), board.GetLength(1)];
+		boardBeforeSolving = null;
+	}
+
+	private async void Solve()
+	{
+		try
+		{
+			Sudoku sudoku = new Sudoku(board);
+
+			if (sudokuSolver.IsSudokuPossible(sudoku))
+			{
+				boardBeforeSolving = new int[board.GetLength(0), board.GetLength(1)];
+				Array.Copy(board, boardBeforeSolving, board.Length);
+				sudokuSolver.GenerateSolution(sudoku);
+				sudoku.TryUncoverSolution();
+
+				Array.Copy(sudoku.SolvedBoard, board, sudoku.SolvedBoard.Length);
+			}
+			else
+			{
+				await AlertBox.DisplaySudokuNotPossibleAlert(Swal);
+			}
+		}
+		catch (Exception e)
+		{
+			await AlertBox.DisplayError(Swal, e.Message);
+		}
+	}
+
+	private void Unsolve()
+	{
+		if(boardBeforeSolving != null)
+		{
+			Array.Copy(boardBeforeSolving, board, boardBeforeSolving.Length);
+			boardBeforeSolving = null;
+		}
+	}
+}

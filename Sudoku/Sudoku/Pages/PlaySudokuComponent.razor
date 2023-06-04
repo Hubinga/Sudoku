@@ -1,5 +1,6 @@
 ﻿@using Sudoku.Classes;
 @using Sudoku.Classes.Enums;
+@using Sudoku.Classes.Structs;
 @using Sudoku.Models;
 @inject SweetAlertService Swal;
 @inherits OwningComponentBase<DbService>
@@ -69,18 +70,6 @@
 </section>
 
 @code {
-	private struct Field
-	{
-		public int RowIdx;
-		public int ColIdx;
-
-		public Field(int rowIdx, int colIdx)
-		{
-			RowIdx = rowIdx;
-			ColIdx = colIdx;
-		}
-	}
-
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private SudokuSolver sudokuSolver = new SudokuSolver();
 
@@ -210,7 +199,7 @@
 			}
 			catch (Exception e)
 			{
-				await AlertBox.DisplayAlert(Swal, e.Message);
+				await AlertBox.DisplayError(Swal, e.Message);
 				Console.WriteLine(e.Message);
 			}
 		}
@@ -308,7 +297,7 @@
 			}
 			else
 			{
-				await AlertBox.DisplayAlert(Swal, "Sudoku not possible to solve (dublicate in collumn, row or block)!");
+				await AlertBox.DisplaySudokuNotPossibleAlert(Swal);
 			}
 		}
 	}

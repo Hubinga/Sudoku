@@ -25,5 +25,10 @@ namespace Sudoku.Classes
 				CancelButtonText = cancelButtonText
 			});
 		}
+
+		public static async Task DisplaySudokuNotPossibleAlert(SweetAlertService sweetAlertService)
+		{
+			await sweetAlertService.FireAsync("Sudoku not possible to solve (dublicate in collumn, row or block)!");
+		}
 	}
 }

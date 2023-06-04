@@ -12,6 +12,13 @@
 		//format: e.g. 1,0,2,0,0,9,... (0 = empty field)
 		public Sudoku? GenerateSudokuFromFile(string input)
 		{
+			int[,] board = LoadBoardFromFile(input);
+
+			return new Sudoku(board);
+		}
+
+		public int[,] LoadBoardFromFile(string input)
+		{
 			string[] numbers = input.Split(',');
 
 			if (numbers.Length != rowSize * colSize)
@@ -21,7 +28,7 @@
 
 			int[,] board = ConvertBoardStringToIntArray(numbers);
 
-			return new Sudoku(board);
+			return board;
 		}
 
 		public int[,] ConvertBoardStringToIntArray(string[] numbers)

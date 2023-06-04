@@ -1,4 +1,5 @@
-﻿<section class="board">
+﻿@using Sudoku.Classes.Structs;
+<section class="board">
 	@{
 		for (int i = 0; i < Board.GetLength(0); i++)
 		{
@@ -25,7 +26,16 @@
 
 				string field = Board[i, j] == 0 ? " " : Board[i, j].ToString();
 
-				<div class=@cssClassTag>@field</div>
+				if(!CanBeEdit){
+					<div class=@cssClassTag>@field</div>
+				}
+				else
+				{
+					int currentRowIdx = i;
+					int currentColIdx = j;
+					<div tabindex="-1" class=@cssClassTag @onkeydown="KeyboardEventHandler" @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@field</div>
+				}
+
 			}
 		}
 	}
@@ -33,4 +43,47 @@
 @code {
 	[Parameter]
 	public int[,] Board { get; set; } = new int[9, 9];
+	[Parameter]
+	public bool CanBeEdit { get; set; } = false;
+
+	private Field activeField = new Field(-1, -1);
+
+	//change number of selected field
+	private void KeyboardEventHandler(KeyboardEventArgs args)
+	{
+		if (!CanBeEdit)
+		{
+			return;
+		}
+
+		if (activeField.RowIdx != -1 && activeField.ColIdx != -1)
+		{
+			string key = args.Key;
+
+			//clear field
+			if (key == "Backspace")
+			{
+				Board[activeField.RowIdx, activeField.ColIdx] = 0;
+				return;
+			}
+
+			int inputNumber;
+			if (int.TryParse(key, out inputNumber))
+			{
+				Board[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(args.Key);
+			}
+		}
+	}
+
+	//set selected field
+	private void FieldClicked(int rowIdx, int colIdx)
+	{
+		if(!CanBeEdit)
+		{
+			return;
+		}
+
+		activeField.RowIdx = rowIdx;
+		activeField.ColIdx = colIdx;
+	}
 }

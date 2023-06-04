@@ -33,3 +33,9 @@
 .tile-blockCol {
     border-right: 2px solid black;
 }
+
+.tile:focus {
+    font-weight: bold;
+    font-size: 30px;
+    color: brown;
+}
