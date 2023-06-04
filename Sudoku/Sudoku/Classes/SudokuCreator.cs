@@ -10,7 +10,7 @@
 		}
 
 		//format: e.g. 1,0,2,0,0,9,... (0 = empty field)
-		public Sudoku? LoadFromFile(string input)
+		public Sudoku? GenerateSudokuFromFile(string input)
 		{
 			string[] numbers = input.Split(',');
 
