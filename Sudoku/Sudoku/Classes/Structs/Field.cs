@@ -10,5 +10,11 @@
 			RowIdx = rowIdx;
 			ColIdx = colIdx;
 		}
+
+		public void ResetField(int rowIdx = -1, int colIdx = -1)
+		{
+			RowIdx = rowIdx;
+			ColIdx = colIdx;
+		}
 	}
 }

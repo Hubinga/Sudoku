@@ -103,6 +103,11 @@
 	{
 		if (Sudoku != null && activeField.RowIdx != -1 && activeField.ColIdx != -1)
 		{
+			if (Sudoku.Solved)
+			{
+				return;
+			}
+
 			string key = args.Key;
 
 			//Console.WriteLine("Key Pressed is " + key);
@@ -166,6 +171,7 @@
 		try
 		{
 			Sudoku = sudokuCreator.GenerateSudokuFromFile(fileContent);
+			activeField.ResetField();
 		}
 		catch (Exception ex)
 		{
