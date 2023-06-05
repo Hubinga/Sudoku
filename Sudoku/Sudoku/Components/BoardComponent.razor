@@ -26,7 +26,7 @@
 
 				string field = Board[i, j] == 0 ? " " : Board[i, j].ToString();
 
-				if(!CanBeEdit){
+				if(!Edit){
 					<div class=@cssClassTag>@field</div>
 				}
 				else
@@ -44,14 +44,14 @@
 	[Parameter]
 	public int[,] Board { get; set; } = new int[9, 9];
 	[Parameter]
-	public bool CanBeEdit { get; set; } = false;
+	public bool Edit { get; set; } = false;
 
 	private Field activeField = new Field(-1, -1);
 
 	//change number of selected field
 	private void KeyboardEventHandler(KeyboardEventArgs args)
 	{
-		if (!CanBeEdit)
+		if (!Edit)
 		{
 			return;
 		}
@@ -78,7 +78,7 @@
 	//set selected field
 	private void FieldClicked(int rowIdx, int colIdx)
 	{
-		if(!CanBeEdit)
+		if(!Edit)
 		{
 			return;
 		}

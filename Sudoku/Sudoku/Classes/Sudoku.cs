@@ -4,10 +4,10 @@
 	{
 		public Sudoku(int[,] board)
 		{
-			OriginalBoard = board;
+			Board = board;
 
-			Board = new int[board.GetLength(0), board.GetLength(1)];
-			Array.Copy(board, Board, board.Length);
+			OriginalBoard = new int[board.GetLength(0), board.GetLength(1)];
+			Array.Copy(board, OriginalBoard, board.Length);
 
 			SolvedBoard = new int[board.GetLength(0), board.GetLength(1)];
 			Array.Copy(board, SolvedBoard, board.Length);

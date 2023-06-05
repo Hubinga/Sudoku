@@ -6,20 +6,21 @@
 @inherits OwningComponentBase<DbService>
 <PageTitle>Solve Sudoku</PageTitle>
 <h3>Solve Sudoku</h3>
-<PlaySudokuComponent HasUploadFileField="false" Sudoku="@sudoku" CurrentSudokuModelId="@Id" CurrentDifficulty="@currentDifficulty" CurrentHelp="@currentHelp" CurrentTime="@currentTime"></PlaySudokuComponent>
+<PlaySudokuComponent HasUploadFileField="false" SudokuData="@sudokuData" Board="@board" CurrentSudokuModelId="@Id" CurrentDifficulty="@currentDifficulty" CurrentHelp="@currentHelp" CurrentTime="@currentTime"></PlaySudokuComponent>
 <div>
   <NavLink href="SudokuCollection" class="back-link">Back</NavLink>
 </div>
 
 @code {
 	private SudokuModel? currentSudokuModel = new SudokuModel();
-	private Sudoku? sudoku = null;
+	private SudokuData? sudokuData = null;
 	[Parameter]
 	public int Id { get; set; }
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private int currentTime = 0;
 	private Difficulty currentDifficulty = Difficulty.Medium;
 	private HelpTypes currentHelp = HelpTypes.Nothing;
+	private int[,] board = new int[9, 9];
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -38,14 +39,16 @@
 				currentBoard = new int[originalBoard.GetLength(0), originalBoard.GetLength(1)];
 				Array.Copy(originalBoard, currentBoard, originalBoard.Length);
 
-				sudoku = new Sudoku(originalBoard, currentBoard, solvedBoard, false);
+				sudokuData = new SudokuData(originalBoard, currentBoard, solvedBoard, false);
 			}
 			else
 			{
 				currentBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.CurrentBoard.Split(","));
 				//sudoku not yet solved
-				sudoku = new Sudoku(originalBoard, currentBoard, originalBoard, currentSudokuModel.Solved);
+				sudokuData = new SudokuData(originalBoard, currentBoard, originalBoard, currentSudokuModel.Solved);
 			}
+
+			board = currentBoard;
 
 			//if already solved timer should start at 0 (user wants to try again)
 			currentTime = currentSudokuModel.Solved ? 0 : currentSudokuModel.Time;
