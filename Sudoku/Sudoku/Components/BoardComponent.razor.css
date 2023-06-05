@@ -39,3 +39,7 @@
     font-size: 30px;
     color: brown;
 }
+
+.fieldInitialFilled {
+    color: gray;
+}

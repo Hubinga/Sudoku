@@ -263,9 +263,25 @@
 			}
 		}
 
-		public bool IsInitialFieldStateFilled(int rowIdx, int colIdx) => OriginalBoard[rowIdx, colIdx] != 0;
+        public List<Tuple<int,int>> GetInitialFilledFields()
+        {
+            List<Tuple<int, int>> filledFields = new List<Tuple<int, int>> { };
 
-		public void TryUncoverRandomField()
+            for (int i = 0; i < OriginalBoard.GetLength(0); i++)
+            {
+                for (int j = 0; j < OriginalBoard.GetLength(1); j++)
+                {
+                    if (OriginalBoard[i, j] != 0)
+                    {
+                        filledFields.Add(Tuple.Create(i,j));
+                    }
+                }
+            }
+
+            return filledFields;
+        }
+
+        public void TryUncoverRandomField()
 		{
 			if (!SolvingProzessFinished)
 			{

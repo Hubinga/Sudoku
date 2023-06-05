@@ -1,11 +1,15 @@
-﻿@using Sudoku.Classes.Structs;
-<section class="board">
+﻿<section class="board">
 	@{
 		for (int i = 0; i < Board.GetLength(0); i++)
 		{
 			for (int j = 0; j < Board.GetLength(1); j++)
 			{
 				string cssClassTag = "tile";
+
+				if (InitialFilledFields.Contains(Tuple.Create(i,j)))
+				{
+					cssClassTag += " fieldInitialFilled";
+				}
 
 				//bigger border for 3x3 block (border-bottom)
 				if((i + 1) % 3 == 0)
@@ -45,10 +49,30 @@
 	}
 </section>
 @code {
+	private struct Field
+	{
+		public int RowIdx;
+		public int ColIdx;
+
+		public Field(int rowIdx, int colIdx)
+		{
+			RowIdx = rowIdx;
+			ColIdx = colIdx;
+		}
+
+		public void ResetField(int rowIdx = -1, int colIdx = -1)
+		{
+			RowIdx = rowIdx;
+			ColIdx = colIdx;
+		}
+	}
+
 	[Parameter]
 	public int[,] Board { get; set; } = new int[9, 9];
 	[Parameter]
 	public bool Edit { get; set; } = false;
+	[Parameter]
+	public List<Tuple<int, int>> InitialFilledFields { get; set; } = new List<Tuple<int, int>>();
 
 	private Field activeField = new Field(-1, -1);
 
@@ -87,7 +111,16 @@
 			return;
 		}
 
-		activeField.RowIdx = rowIdx;
-		activeField.ColIdx = colIdx;
+		//avoid changing field if its initially filled
+		if (InitialFilledFields.Any(f => f.Item1 == rowIdx && f.Item2 == colIdx))
+		{
+			activeField.RowIdx = -1;
+			activeField.ColIdx = -1;
+		}
+		else
+		{
+			activeField.RowIdx = rowIdx;
+			activeField.ColIdx = colIdx;
+		}
 	}
 }
