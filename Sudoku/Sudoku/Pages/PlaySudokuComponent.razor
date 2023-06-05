@@ -77,6 +77,8 @@
 		try
 		{
 			Board = sudokuCreator.LoadBoardFromFile(fileContent);
+			//display start button again without pressing the restart button
+			sudoku = null;
 		}
 		catch (Exception ex)
 		{
