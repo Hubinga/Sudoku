@@ -24,7 +24,7 @@
 	<br/>
 </div>
 <div hidden ="@(!isRunning)" class="timer-container">Time: @timeSpan.ToString(@"hh\:mm\:ss")</div>
-<BoardComponent Board="Board" Edit="@(!sudoku?.Solved ?? true)" InitialFilledFields="initialFilledFields"></BoardComponent>
+<BoardComponent Board="Board" Edit="BoardCanBeEdit()" InitialFilledFields="initialFilledFields"></BoardComponent>
 
 @code {
 	private SudokuCreator sudokuCreator = new SudokuCreator();
@@ -57,8 +57,20 @@
 		CurrentTime = 0;
 	}
 
-	#region Button Methods
+	private bool BoardCanBeEdit()
+	{
+		//load model (user should not be able to modify board before pressing start)
+		if (SudokuData != null)
+		{
+			return !inactive;
+		}
+		else
+		{
+			return !sudoku?.Solved ?? true;
+		}
+	}
 
+	#region Button Methods
 	//Upload Sudoku Button
 	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
 	{
@@ -174,6 +186,7 @@
 		ResetStopwatch();
 		inactive = true;
 		sudoku.Solved = true;
+		initialFilledFields.Clear();
 	}
 	#endregion
 
