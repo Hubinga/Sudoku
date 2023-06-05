@@ -14,6 +14,7 @@ builder.Services.AddDbContext<SudokuContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SudokuContext") ?? throw new InvalidOperationException("Connection string 'SudokuContext' not found.")));
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSweetAlert2();
+//Service to load and edit Sudoku Models, which are stored in the database
 builder.Services.AddScoped<DbService>();
 
 var app = builder.Build();

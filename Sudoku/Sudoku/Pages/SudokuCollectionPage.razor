@@ -114,6 +114,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		//load models from database
 		sudokuModels = await @Service.GetSudokuModelsAsync();
 	}
 
@@ -143,10 +144,11 @@
 		// Close the Popup
 		ShowPopup = false;
 	}
+
 	void AddNewSudoku()
 	{
 		currentSudokuModel = new SudokuModel();
-		// Set Id to 0 so we know it is a new record
+		// Set Id to 0 -> it is a new record
 		currentSudokuModel.Id = 0;
 		ShowPopup = true;
 	}

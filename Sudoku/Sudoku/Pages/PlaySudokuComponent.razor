@@ -58,7 +58,7 @@
 
 	#region Button Methods
 
-	//upload sudoku
+	//Upload Sudoku Button
 	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
 	{
 		//text file
@@ -87,10 +87,12 @@
 		}
 	}
 
+	//Reset Button
 	private void ResetSudoku()
 	{
 		if (sudoku != null)
 		{
+			//reset current board to original board
 			sudoku.Reset();
 			//reset time to 0 (user resets the board and so the time should also start at 0)
 			CurrentTime = 0;
@@ -101,23 +103,8 @@
 		}
 	}
 
-	private async void SolveSudoku()
-	{
-		if (sudoku != null)
-		{
-			try
-			{
-				sudoku.TryUncoverSolution();
-				CurrentHelp = HelpTypes.Solution;
-			}
-			catch (Exception e)
-			{
-				await AlertBox.DisplayError(Swal, e.Message);
-				Console.WriteLine(e.Message);
-			}
-		}
-	}
-
+	#region End
+	//End Button
 	private async void GetResult()
 	{
 		if (sudoku != null)
@@ -147,7 +134,7 @@
 					//end
 					else
 					{
-						SolveSudoku();
+						DisplaySolution();
 						StopSudokuProzess();
 						//save
 						await Save();
@@ -163,13 +150,33 @@
 		}
 	}
 
+	private async void DisplaySolution()
+	{
+		if (sudoku != null)
+		{
+			try
+			{
+				//display solved board
+				sudoku.TryUncoverSolution();
+				CurrentHelp = HelpTypes.Solution;
+			}
+			catch (Exception e)
+			{
+				await AlertBox.DisplayError(Swal, e.Message);
+			}
+		}
+	}
+
+	//Sudoku is solved: end "game"
 	private void StopSudokuProzess()
 	{
 		ResetStopwatch();
 		inactive = true;
 		sudoku.Solved = true;
 	}
+	#endregion
 
+	//Hint Button
 	private async void GetHint()
 	{
 		if (sudoku != null)
@@ -190,16 +197,19 @@
 		}
 	}
 
+	//Start Button
 	private async void Start()
 	{
 		if (sudoku == null)
-		{
+		{		
 			if(SudokuData != null)
 			{
+				//load sudoku
 				sudoku = new Sudoku(SudokuData.OriginalBoard, SudokuData.CurrentBoard, SudokuData.SolvedBoard, SudokuData.Solved);	
 			}
 			else
 			{
+				//new sudoku
 				sudoku = new Sudoku(Board);
 			}
 
@@ -225,6 +235,7 @@
 		}
 	}
 
+	//Restart Button (start with empty board)
 	private async Task Restart()
 	{
 		Board = new int[Board.GetLength(0), Board.GetLength(1)];
@@ -236,11 +247,9 @@
 		//reset Help to "No Help"
 		CurrentHelp = HelpTypes.Nothing;
 	}
-
-	#endregion
 	
 	#region Save
-
+	//Save Button
 	private async Task Save()
 	{
 		if (sudoku != null)
@@ -315,6 +324,8 @@
 			await AlertBox.DisplayError(Swal, "Error while updating sudoku!");
 		}
 	}
+
+	#endregion
 
 	#endregion
 

@@ -67,7 +67,7 @@
 		{
 			for (int i = 0; i < Board.GetLength(1); i++)
 			{
-				//get current row
+				//get current collumn
 				List<int> currentCol = Enumerable.Range(0, Board.GetLength(0)).Select(x => Board[x, i]).Where(e => e != 0).ToList();
 				List<int> distinctNumbers = currentCol.Distinct().ToList();
 				//e.g. filled fields: 5 (1,2,3,2,4) -> distinct numbers: 4 -> dublicate
@@ -127,6 +127,8 @@
 		public bool IsFieldEmpty(int rowIdx, int colIdx) => SolvedBoard[rowIdx, colIdx] == 0;
 
 		public void ClearField(int rowIdx, int colIdx) => SolvedBoard[rowIdx, colIdx] = 0;
+
+		public void ChangeNumberOfField(int rowIdx, int colIdx, int number) => SolvedBoard[rowIdx, colIdx] = number;
 
 		public bool IsSolved()
 		{
@@ -191,6 +193,7 @@
 
 		#endregion
 
+		//for debugging
 		public void Print()
 		{
             Console.WriteLine("Solved Board:");
@@ -209,6 +212,7 @@
             Console.WriteLine(solvedBoardAsString);
         }
 
+		//Reset board to original board
 		public void Reset()
 		{
 			for (int i = 0; i < Board.GetLength(0); i++)
@@ -220,6 +224,7 @@
 			}
 		}
 
+		//compare board with solved board
 		public bool IsCorrectSoulution()
 		{
 			if (!SolvingProzessFinished)
@@ -241,6 +246,7 @@
 			return true;
 		}
 
+		//set board values to solved board values
 		public void TryUncoverSolution()
 		{
 			if (!SolvingProzessFinished)
@@ -257,22 +263,7 @@
 			}
 		}
 
-		public bool IsInitialFieldStateFilled(int rowIdx, int colIdx)
-		{
-			return OriginalBoard[rowIdx, colIdx] != 0;
-		}
-
-		public void ChangeNumberOfField(int rowIdx, int colIdx, int number, bool generateSolution = false)
-		{
-			if (generateSolution)
-			{
-				SolvedBoard[rowIdx, colIdx] = number;
-			}
-			else
-			{
-				Board[rowIdx, colIdx] = number;
-			}
-		}
+		public bool IsInitialFieldStateFilled(int rowIdx, int colIdx) => OriginalBoard[rowIdx, colIdx] != 0;
 
 		public void TryUncoverRandomField()
 		{
@@ -281,6 +272,7 @@
 				throw new Exception("Solving Prozess not yet finished");
 			}
 
+			//store all current empty fields
 			List<Tuple<int, int>> emptyFields = new List<Tuple<int, int>>();
 
 			for (int i = 0; i < Board.GetLength(0); i++)
@@ -294,11 +286,13 @@
 				}
 			}
 
+			//board is already filled
 			if (emptyFields.Count == 0)
 			{
 				throw new TryUncoverRandomFieldException("Board is already filled: You can press \"End\" now!");
 			}
 
+			//select random field
 			Random random = new Random();
 			int idx = random.Next(0, emptyFields.Count);
 			Tuple<int, int> fieldIndicies = emptyFields[idx];

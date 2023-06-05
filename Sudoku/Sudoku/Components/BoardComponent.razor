@@ -7,18 +7,22 @@
 			{
 				string cssClassTag = "tile";
 
+				//bigger border for 3x3 block (border-bottom)
 				if((i + 1) % 3 == 0)
 				{
 					cssClassTag += " tile-blockRow";
 				}
+				//bigger border for 3x3 block (border-right)
 				if ((j + 1) % 3 == 0)
 				{
 					cssClassTag += " tile-blockCol";
 				}
+				//bigger border for first row (border-top)
 				if (i == 0)
 				{
 					cssClassTag += " tile-firstRow";
 				}
+				//bigger border for first column (border-left)
 				if (j == 0)
 				{
 					cssClassTag += " tile-firstCol";

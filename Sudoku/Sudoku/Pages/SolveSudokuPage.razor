@@ -36,6 +36,7 @@
 			{
 				int[,] solvedBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.SolvedBoard.Split(","));
 
+				//set current Board values to original Board values: user wants to solve again!
 				currentBoard = new int[originalBoard.GetLength(0), originalBoard.GetLength(1)];
 				Array.Copy(originalBoard, currentBoard, originalBoard.Length);
 
@@ -44,7 +45,7 @@
 			else
 			{
 				currentBoard = sudokuCreator.ConvertBoardStringToIntArray(currentSudokuModel.CurrentBoard.Split(","));
-				//sudoku not yet solved
+				//sudoku not yet solved (user wants to continue)
 				sudokuData = new SudokuData(originalBoard, currentBoard, originalBoard, currentSudokuModel.Solved);
 			}
 

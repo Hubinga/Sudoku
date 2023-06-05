@@ -21,6 +21,7 @@
 
 		private void SolveSudoku(Sudoku sudoku, int rowIdx = 0, int colIdx = 0)
 		{
+			//Stop if sudoku is solved
 			if (sudoku.IsSolved())
 			{
 				sudoku.Print();
@@ -28,7 +29,7 @@
 				return;
 			}
 
-			//e.g. 0/8 -> 1/0
+			//callculate next Row/Col indicies: e.g. 0/8 -> 1/0
 			int nextRowIdx = colIdx == (colSize - 1) ? rowIdx + 1 : rowIdx;
 			int nextColIdx = colIdx == (colSize - 1) ? 0 : colIdx + 1;
 
@@ -41,13 +42,15 @@
 			{
 				for (int i = 1; i <= 9; i++)
 				{
+					//change field value if possible
 					if (IsNumberPossible(sudoku, rowIdx, colIdx, i))
 					{
-						sudoku.ChangeNumberOfField(rowIdx, colIdx, i, true);
+						sudoku.ChangeNumberOfField(rowIdx, colIdx, i);
 						SolveSudoku(sudoku, nextRowIdx, nextColIdx);
 					}
 				}
 
+				//clear current field if no number is possible (to jump back, backtracking)
 				if (!sudoku.IsSolved())
 				{
 					sudoku.ClearField(rowIdx, colIdx);

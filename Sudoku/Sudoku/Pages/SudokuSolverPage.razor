@@ -21,12 +21,14 @@
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private SudokuSolver sudokuSolver = new SudokuSolver();
 
+	//Reset Button -> start with an empty board
 	private void Reset()
 	{
 		board = new int[board.GetLength(0), board.GetLength(1)];
 		boardBeforeSolving = null;
 	}
 
+	//Solve Button: Display solved Board
 	private async void Solve()
 	{
 		try
@@ -35,11 +37,13 @@
 
 			if (sudokuSolver.IsSudokuPossible(sudoku))
 			{
+				//store original board to restore (unsolve) it later
 				boardBeforeSolving = new int[board.GetLength(0), board.GetLength(1)];
 				Array.Copy(board, boardBeforeSolving, board.Length);
+				//solving prozess
 				sudokuSolver.GenerateSolution(sudoku);
+				//display solution
 				sudoku.TryUncoverSolution();
-
 				Array.Copy(sudoku.SolvedBoard, board, sudoku.SolvedBoard.Length);
 			}
 			else
@@ -53,6 +57,7 @@
 		}
 	}
 
+	//Unsolve Button: restore original board
 	private void Unsolve()
 	{
 		if(boardBeforeSolving != null)
