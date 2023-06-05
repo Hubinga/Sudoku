@@ -1,0 +1,50 @@
+﻿@{
+	List<string>? originalBoardLines = SeparateLinesOfBoard(BoardString);
+
+	if(originalBoardLines != null)
+	{
+		<td class = "table-data">							
+		@originalBoardLines[0]<BR>						
+		@originalBoardLines[1]<BR>					
+		@originalBoardLines[2]<BR>						
+		@originalBoardLines[3]<BR>					
+		@originalBoardLines[4]<BR>						
+		@originalBoardLines[5]<BR>											
+		@originalBoardLines[6]<BR>														
+		@originalBoardLines[7]<BR>							
+		@originalBoardLines[8]					
+		</td>					
+	}					
+	else					
+	{				
+		<td class = "table-data">@BoardString</td>				
+	}
+}
+
+@code {
+	[Parameter]
+	public string? BoardString { get; set; } = null;
+
+	private List<string>? SeparateLinesOfBoard(string? board)
+	{
+		if (board == null)
+		{
+			return null;
+		}
+
+		List<string> lines = new List<string>();
+
+		string[] numbers = board.Split(",");
+
+		for (int i = 0; i < 9; i++)
+		{
+			int start = 9 * i;
+			//get line
+			var lineNumbers = Enumerable.Range(start, 9).Select(x => numbers[x]).ToList();
+			string line = String.Join(" ", lineNumbers);
+			lines.Add(line);
+		}
+
+		return lines;
+	}
+}

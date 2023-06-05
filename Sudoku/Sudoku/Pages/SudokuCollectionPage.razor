@@ -1,6 +1,7 @@
 ﻿@page "/SudokuCollection"
 @using Sudoku.Classes;
 @using Sudoku.Classes.Enums;
+@using Sudoku.Components
 @using Sudoku.Models;
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<DbService>
@@ -29,9 +30,9 @@
 			string solveSudokuUrlText = item.Solved ? "Solve Again" : "Solve";
 
 			<tr>
-				<td class = "table-data">@item.OriginalBoard</td>
-				<td class = "table-data">@item.CurrentBoard</td>
-				<td class = "table-data">@item.SolvedBoard</td>
+				<BoardTableDataComponent BoardString="@item.OriginalBoard"></BoardTableDataComponent>
+				<BoardTableDataComponent BoardString="@item.CurrentBoard"></BoardTableDataComponent>
+				<BoardTableDataComponent BoardString="@item.SolvedBoard"></BoardTableDataComponent>
 				<td>@item.Difficulty</td>
 				<td>@item.Help</td>
 				<td>@item.Time</td>
