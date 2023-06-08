@@ -14,19 +14,27 @@
 			return true;
 		}
 
-		public void GenerateSolution(Sudoku sudoku)
+		public void GenerateSolution(Sudoku sudoku, int numberOfSolutions = 1)
 		{
-			SolveSudoku(sudoku);
+			SolveSudoku(sudoku, numberOfSolutions);
+			sudoku.SolvingProzessFinished = true;
 		} 
 
-		private void SolveSudoku(Sudoku sudoku, int rowIdx = 0, int colIdx = 0)
+		private void SolveSudoku(Sudoku sudoku, int numberOfSolutions = 1, int rowIdx = 0, int colIdx = 0)
 		{
 			//Stop if sudoku is solved
 			if (sudoku.IsSolved())
 			{
 				sudoku.Print();
-				sudoku.SolvingProzessFinished = true;
-				return;
+				//store current solution
+				sudoku.AddCurrentSolution();
+
+				if (sudoku.BoardSolutions.Count < numberOfSolutions) 
+				{
+					//clear last field to continue
+					sudoku.ClearLastField();
+				}
+                return;
 			}
 
 			//callculate next Row/Col indicies: e.g. 0/8 -> 1/0
@@ -36,7 +44,7 @@
 			//jump to next field if already filled
 			if (!sudoku.IsFieldEmpty(rowIdx, colIdx))
 			{
-				SolveSudoku(sudoku, nextRowIdx, nextColIdx);
+				SolveSudoku(sudoku, numberOfSolutions, nextRowIdx, nextColIdx);
 			}
 			else
 			{
@@ -46,7 +54,7 @@
 					if (IsNumberPossible(sudoku, rowIdx, colIdx, i))
 					{
 						sudoku.ChangeNumberOfField(rowIdx, colIdx, i);
-						SolveSudoku(sudoku, nextRowIdx, nextColIdx);
+						SolveSudoku(sudoku, numberOfSolutions, nextRowIdx, nextColIdx);
 					}
 				}
 

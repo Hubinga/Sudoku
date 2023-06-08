@@ -6,10 +6,18 @@
 @{
 	if(board != null)
 	{
+		if(boardSolutuions != null)
+		{
+			<diV>Solution @(currentBoardSolutuionIdx + 1) of @boardSolutuions.Count</diV>
+		}
 		<BoardComponent Board="board" Edit="true"></BoardComponent>
-		<button class="button-purple" @onclick="Reset">Reset</button>
-		<button class="button-purple" @onclick="Solve">Solve</button>
-		<button class="button-purple" @onclick="Unsolve">Unsolve</button>
+
+		<button class="button-purple" @onclick="Reset" title="Reset to an empty Board!">Reset</button>
+		<button class="button-purple" @onclick="Solve" title="Solve Board!">Solve</button>
+		<button class="button-purple" @onclick="Unsolve" title="Restore Unsolved Board!">Unsolve</button>
+
+		<button class="button-purple" disabled="@(boardSolutuions==null)" @onclick="Prev" title="Show previous Solution!">Prev</button>
+		<button class="button-purple" disabled="@(boardSolutuions==null)" @onclick="Next" title="Show next Solution!">Next</button>
 	}
 }
 
@@ -18,14 +26,21 @@
 	private int[,] board = new int[9,9];
 	private int[,]? boardBeforeSolving = null;
 
+	private List<int[,]>? boardSolutuions = null;
+	private int currentBoardSolutuionIdx = -1;
+
 	private SudokuCreator sudokuCreator = new SudokuCreator();
 	private SudokuSolver sudokuSolver = new SudokuSolver();
+
+	private int numberOfSolutions = 10;
 
 	//Reset Button -> start with an empty board
 	private void Reset()
 	{
 		board = new int[board.GetLength(0), board.GetLength(1)];
 		boardBeforeSolving = null;
+		boardSolutuions = null;
+		currentBoardSolutuionIdx = -1;
 	}
 
 	//Solve Button: Display solved Board
@@ -41,10 +56,19 @@
 				boardBeforeSolving = new int[board.GetLength(0), board.GetLength(1)];
 				Array.Copy(board, boardBeforeSolving, board.Length);
 				//solving prozess
-				sudokuSolver.GenerateSolution(sudoku);
-				//display solution
-				sudoku.TryUncoverSolution();
-				Array.Copy(sudoku.SolvedBoard, board, sudoku.SolvedBoard.Length);
+				sudokuSolver.GenerateSolution(sudoku, numberOfSolutions);
+				//get all solutions
+				boardSolutuions = sudoku.BoardSolutions;
+				
+				if(boardSolutuions.Count > 0)
+				{
+					//for testing
+					HasDublicateSolutions();
+					//set solution idx to first element (0)
+					currentBoardSolutuionIdx = 0;
+					//display first solution
+					board = boardSolutuions[0];
+				}
 			}
 			else
 			{
@@ -64,6 +88,101 @@
 		{
 			Array.Copy(boardBeforeSolving, board, boardBeforeSolving.Length);
 			boardBeforeSolving = null;
+			boardSolutuions = null;
+			currentBoardSolutuionIdx = -1;
 		}
 	}
+
+	private void Next()
+	{
+		if(boardSolutuions != null)
+		{
+			if(currentBoardSolutuionIdx < boardSolutuions.Count - 1)
+			{
+				currentBoardSolutuionIdx++;
+			}
+			else
+			{
+				currentBoardSolutuionIdx = 0;
+			}
+			board = boardSolutuions[currentBoardSolutuionIdx];
+		}
+	}
+
+	private void Prev()
+	{
+		if (boardSolutuions != null)
+		{
+			if(currentBoardSolutuionIdx > 0)
+			{
+				currentBoardSolutuionIdx--;
+			}
+			else
+			{
+				currentBoardSolutuionIdx = boardSolutuions.Count - 1;
+			}
+			board = boardSolutuions[currentBoardSolutuionIdx];
+		}
+	}
+
+	//Only for testing
+	#region Check for dublicate Solution
+	private bool HasDublicateSolutions()
+	{
+		if (boardSolutuions != null)
+		{
+			//compare all boards with the first one
+			for (int i = 0; i < boardSolutuions.Count; i++)
+			{
+				if (CheckForDublicateBoards(i))
+				{
+					Console.WriteLine("Dublicate Board at idx: {0}", i);
+					return true;
+				}
+			}
+		}
+
+		Console.WriteLine("All Solutions are unique!");
+		return false;
+	}
+
+	private bool CheckForDublicateBoards(int boardSolutionIdx)
+	{
+		if (boardSolutuions == null)
+		{
+			return false;
+		}
+
+		for (int currentBoardIdx = 0; currentBoardIdx < boardSolutuions.Count; currentBoardIdx++)
+		{
+			if (currentBoardIdx == boardSolutionIdx)
+			{
+				continue;
+			}
+
+			if (IsDublicate(boardSolutuions[boardSolutionIdx], boardSolutuions[currentBoardIdx]))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private bool IsDublicate(int[,] board, int[,] otherBoard)
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			for (int j = 0; j < 9; j++)
+			{
+				if (otherBoard[i, j] != board[i, j])
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+	#endregion
 }

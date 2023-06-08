@@ -41,6 +41,8 @@
 		public readonly int[,] OriginalBoard;
 		public readonly int[,] SolvedBoard;
 
+		public List<int[,]> BoardSolutions { get; private set; } = new List<int[,]>();
+
 		public bool SolvingProzessFinished { get; set; } = false;
 		public bool Solved { get; set; } = false;
 
@@ -128,7 +130,17 @@
 
 		public void ClearField(int rowIdx, int colIdx) => SolvedBoard[rowIdx, colIdx] = 0;
 
+		public void ClearLastField() => SolvedBoard[8, 8] = 0;
+
 		public void ChangeNumberOfField(int rowIdx, int colIdx, int number) => SolvedBoard[rowIdx, colIdx] = number;
+
+		public void AddCurrentSolution()
+		{
+			//save copy of current solved board
+			int[,] solution = new int[SolvedBoard.GetLength(0), SolvedBoard.GetLength(1)];
+			Array.Copy(SolvedBoard, solution, SolvedBoard.Length);
+			BoardSolutions.Add(solution);
+		}
 
 		public bool IsSolved()
 		{
