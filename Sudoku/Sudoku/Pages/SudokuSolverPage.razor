@@ -2,22 +2,33 @@
 @using Sudoku.Classes;
 @using Sudoku.Components
 @inject SweetAlertService Swal;
-<h1>Enter the known numbers and click the Solve button!</h1>
+<h1>Enter the known numbers or upload a sudoku and click the Solve button!</h1>
+<div>
+	<InputFile class="button-purple" OnChange="@OnInputFileChanged"/>
+</div>
+<br/>
 @{
 	if(board != null)
 	{
-		if(boardSolutuions != null)
-		{
-			<diV>Solution @(currentBoardSolutuionIdx + 1) of @boardSolutuions.Count</diV>
-		}
-		<BoardComponent Board="board" Edit="true"></BoardComponent>
-
 		<button class="button-purple" @onclick="Reset" title="Reset to an empty Board!">Reset</button>
 		<button class="button-purple" @onclick="Solve" title="Solve Board!">Solve</button>
 		<button class="button-purple" @onclick="Unsolve" title="Restore Unsolved Board!">Unsolve</button>
+		<br/>
 
-		<button class="button-purple" disabled="@(boardSolutuions==null)" @onclick="Prev" title="Show previous Solution!">Prev</button>
-		<button class="button-purple" disabled="@(boardSolutuions==null)" @onclick="Next" title="Show next Solution!">Next</button>
+		<div id="gallerywrapper">
+			<div id="gallery">
+				<div id="pic1">
+					<BoardComponent Board="board" Edit="@(boardSolutuions == null)"></BoardComponent>
+
+					@if (boardSolutuions != null)
+					{
+						<button class="button-purple previous" @onclick="Prev" title="Show previous Solution!">Prev</button>
+						<button class="button-purple next" @onclick="Next" title="Show next Solution!">Next</button>
+						<h3>Solution @(currentBoardSolutuionIdx + 1) of @boardSolutuions?.Count</h3>
+					}
+				</div>
+			</div>
+		</div>
 	}
 }
 
@@ -41,6 +52,32 @@
 		boardBeforeSolving = null;
 		boardSolutuions = null;
 		currentBoardSolutuionIdx = -1;
+	}
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+	{
+		//text file
+		if (e.File.ContentType != "text/plain")
+		{
+			return;
+		}
+
+		var file = e.File;
+		long maxsize = 512000;
+
+		var buffer = new byte[file.Size];
+		await file.OpenReadStream(maxsize).ReadAsync(buffer);
+		string fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+
+		try
+		{
+			board = sudokuCreator.LoadBoardFromFile(fileContent);
+		}
+		catch (Exception ex)
+		{
+			await AlertBox.DisplayAlert(Swal, ex.Message);
+			Console.WriteLine(ex.Message);
+		}
 	}
 
 	//Solve Button: Display solved Board

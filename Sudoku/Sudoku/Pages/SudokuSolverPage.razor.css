@@ -29,3 +29,42 @@
     box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;    
     transition-duration: .1s;
 }
+
+#gallerywrapper {
+    width: 640px;
+    height: 650px;
+    margin: 0 auto;
+    position: relative;
+    font-family: verdana, arial, sans-serif;
+}
+
+#gallerywrapper #gallery {      
+    position: absolute;      
+    left: 0;   
+    top: 0;     
+    height: 650px;     
+    width: inherit;     
+    overflow: hidden;  
+    text-align: center;
+}
+
+#gallerywrapper #gallery div img {            
+    clear: both;     
+    display: block;     
+    margin: 0 auto;    
+    border: 0; 
+}
+
+#gallery .previous {
+    display: inline;
+    float: left;
+    margin-left: 80px;
+    text-decoration: none;
+}
+
+#gallery .next {
+    display: inline;
+    float: right;
+    margin-right: 80px;
+    text-decoration: none;
+}
